@@ -57,7 +57,7 @@ class Item
     public function __construct($menu, $title)
     {
         $this->menu = $menu;
-        $item->title = $title;
+        $this->title = $title;
         $this->id = uniqid(rand());
     }
 
@@ -83,7 +83,7 @@ class Item
         $current_title = array_get($this->attributes, 'title', '');
         $this->attributes['title'] = $value;
         if (array_get($this->attributes, 'nickname', '') == $current_title) {
-            $this->nickname = $nickname;
+            $this->nickname = $value;
         }
     }
 

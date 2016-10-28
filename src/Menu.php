@@ -38,7 +38,7 @@ class Menu
      */
     public function addMenu($title)
     {
-        $item = new Item($this);
+        $item = new Item($this, $title);
         $this->item_collection->push($item);
 
         return $item;
@@ -53,7 +53,7 @@ class Menu
      */
     public function add($title)
     {
-        $this->addMenu($title);
+        return $this->addMenu($title);
     }
 
     /**

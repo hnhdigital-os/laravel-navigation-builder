@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelHtmlBuilder\Tests;
+namespace Bluora\LaravelNavigationBuilder\Tests;
 
 use PHPUnit\Framework\TestCase;
 

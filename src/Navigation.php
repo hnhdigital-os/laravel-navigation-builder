@@ -1,4 +1,3 @@
-
 <?php
 
 namespace Bluora\LaravelNavigationBuilder;
@@ -19,7 +18,7 @@ class Navigation
      */
     public function __construct()
     {
-        $this->collection = new Collection();
+        $this->menu_collection = new Collection();
     }
 
     /**
@@ -39,7 +38,7 @@ class Navigation
         $this->menu_collection->put($name, $menu);
 
         // Make available in all views.
-        \View::share($name, $menu);
+        \view::share($name, $menu);
 
         // Allocate menu items, if provided.
         if (is_callable($item_allocation_callback)) {

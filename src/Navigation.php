@@ -25,8 +25,8 @@ class Navigation
     /**
      * Create new menu.
      *
-     * @param  string  $name
-     * @param  Closure $item_allocation_callback
+     * @param string  $name
+     * @param Closure $item_allocation_callback
      *
      * @return Bluora\LaravelNavigationBuilder\Menu;
      */
@@ -52,7 +52,7 @@ class Navigation
     /**
      * Return menu instance by it's key.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return \Bluora\LaravelNavigationBuilder\Menu
      */
@@ -64,7 +64,7 @@ class Navigation
     /**
      * Return all menu instances.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return \Bluora\LaravelNavigationBuilder\Collection
      */

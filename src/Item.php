@@ -49,7 +49,7 @@ class Item
     /**
      * Initializing the menu item.
      *
-     * @param Menu $menu
+     * @param Menu   $menu
      * @param string $title
      *
      * @return void
@@ -102,7 +102,7 @@ class Item
     /**
      * Checks if the item has any children.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasChildren()
     {
@@ -132,12 +132,14 @@ class Item
 
         if (stripos($attribute_name, 'data_') !== false) {
             $this->data[substr($attribute_name, 5)] = $value;
+
             return;
         }
 
         $set_attribute_method = 'set'.studly_case($attribute_name);
         if (method_exists($this, $set_attribute_method)) {
             $this->$set_attribute_method($value);
+
             return;
         }
 
@@ -160,6 +162,7 @@ class Item
         $get_attribute_method = 'get'.studly_case($attribute_name);
         if (method_exists($this, $get_attribute_method)) {
             $this->$get_attribute_method($value);
+
             return;
         }
 

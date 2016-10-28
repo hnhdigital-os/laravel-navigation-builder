@@ -1,4 +1,4 @@
-# Laravel HTML Builder
+# Laravel Navigation Builder
 
 [![Latest Stable Version](https://poser.pugx.org/bluora/laravel-navigation-builder/v/stable.svg)](https://packagist.org/packages/bluora/laravel-navigation-builder) [![Total Downloads](https://poser.pugx.org/bluora/laravel-navigation-builder/downloads.svg)](https://packagist.org/packages/bluora/laravel-navigation-builder) [![Latest Unstable Version](https://poser.pugx.org/bluora/laravel-navigation-builder/v/unstable.svg)](https://packagist.org/packages/bluora/laravel-navigation-builder) [![License](https://poser.pugx.org/bluora/laravel-navigation-builder/license.svg)](https://packagist.org/packages/bluora/laravel-navigation-builder)
 

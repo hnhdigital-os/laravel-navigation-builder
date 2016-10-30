@@ -2,8 +2,59 @@
 
 namespace Bluora\LaravelNavigationBuilder;
 
+use Bluora\LaravelHtmlGenerator\Html;
+
 class Item
 {
+    /**
+     * No link specified.
+     *
+     * @var string
+     */
+    const LINK_EMPTY = 'empty';
+
+    /**
+     * Link action.
+     *
+     * @var string
+     */
+    const LINK_ACTION = 'action';
+
+    /**
+     * Link route.
+     *
+     * @var string
+     */
+    const LINK_ROUTE = 'route';
+
+    /**
+     * Link url.
+     *
+     * @var string
+     */
+    const LINK_URL = 'url';
+
+    /**
+     * Link url.
+     *
+     * @var string
+     */
+    const LINK_INSECURE_URL = 'insecure_url';
+
+    /**
+     * Link external url.
+     *
+     * @var string
+     */
+    const LINK_EXTERNAL_URL = 'external_url';
+
+    /**
+     * Link type (default used is empty).
+     *
+     * @var string
+     */
+    private $link_type = self::LINK_EMPTY;
+
     /**
      * Object reference to the menu.
      *
@@ -26,14 +77,11 @@ class Item
     private $parent;
 
     /**
-     * Item attributes.
+     * Item data.
      *
-     * @var array
-     */
-    private $attributes = [];
-
-    /**
-     * Item data attributes.
+     * - title
+     * - nickname
+     * - active
      *
      * @var array
      */
@@ -42,9 +90,23 @@ class Item
     /**
      * Item options.
      *
+     * - open_new_window (setOptionOpenNewWindow)
+     * - hide_if_not_active (setOptionHideIfNotActive)
+     * - show_in_breadcrumb_if_active (setOptionShowInBreadcrumbIfActive)
+     *
      * @var array
      */
-    private $options = [];
+    private $option = [];
+
+    /**
+     * Item attributes.
+     */
+    private $item_attribute = [];
+
+    /**
+     * Link attributes.
+     */
+    private $link_attribute = [];
 
     /**
      * Initializing the menu item.
@@ -63,40 +125,16 @@ class Item
 
     /**
      * Add a menu item as a child.
+     *
+     * @param string $title
      */
     public function add($title)
     {
         $item = $this->addMenu($title);
         $item->parent_id = $this->id;
-        $item->parent_item = $this;
-    }
+        $item->parent = $this;
 
-    /**
-     * Set the title.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setTitle($value)
-    {
-        $current_title = array_get($this->attributes, 'title', '');
-        $this->attributes['title'] = $value;
-        if (array_get($this->attributes, 'nickname', '') == $current_title) {
-            $this->nickname = $value;
-        }
-    }
-
-    /**
-     * Set the nickname.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setNickanme($value)
-    {
-        $this->attributes['nickname'] = strtolower($value);
+        return $item;
     }
 
     /**
@@ -122,50 +160,299 @@ class Item
     }
 
     /**
-     * Set an attribute.
+     * Modify an attribute on the item.
+     * Alias for addItemAttribute($name, $value)
      *
-     * @return void
+     * @param  string $name
+     * @param  string $value
+     * @param  string $action
+     *
+     * @return Item
      */
-    public function __set($attribute_name, $value)
+    public function item($name, $value, $action = 'add')
     {
-        $attribute_name = snake_case($attribute_name);
-
-        if (stripos($attribute_name, 'data_') !== false) {
-            $this->data[substr($attribute_name, 5)] = $value;
-
-            return;
-        }
-
-        $set_attribute_method = 'set'.studly_case($attribute_name);
-        if (method_exists($this, $set_attribute_method)) {
-            $this->$set_attribute_method($value);
-
-            return;
-        }
-
-        $this->attributes[$attribute_name] = $value;
+        $method_name = $action.ucfirst($name).'Attribute';
+        $item->$method_name($value);
+        return $this;
     }
 
     /**
-     * Return the value of an attribute.
+     * Modify an attribute on the link.
+     * Alias for addLinkAttribute($name, $value)
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  string $action
+     *
+     * @return Item
+     */
+    public function link($name, $value, $action = 'add')
+    {
+        $method_name = $action.ucfirst($name).'Attribute';
+        $item->$method_name($value);
+        return $this;
+    }
+
+    /**
+     * Set the item to be a action.
+     *
+     * @param  string $route_name
+     * @param  array $parameters
+     *
+     * @return void
+     */
+    public function action($name, ...$parameters)
+    {
+        $this->link_type = self::LINK_ACTION;
+        $this->link_value = [$name, $parameters];
+    }
+
+    /**
+     * Set the item to be a route.
+     *
+     * @param  string $name
+     * @param  array $parameters
+     *
+     * @return void
+     */
+    public function route($name, ...$parameters)
+    {
+        $this->link_type = self::LINK_ROUTE;
+        $this->link_value = [$name, $parameters];
+    }
+
+    /**
+     * Set the item to be a url.
+     *
+     * @param  string $url
+     * @param  array $parameters
+     *
+     * @return void
+     */
+    public function url($url, ...$parameters)
+    {
+        $this->link_type = self::LINK_URL;
+        $this->link_value = [$url, $parameters];
+    }
+
+    /**
+     * Set the item to be a insecure url.
+     *
+     * @param  string $url
+     * @param  array $parameters
+     *
+     * @return void
+     */
+    public function insecureUrl($url, ...$parameters)
+    {
+        $this->link_type = self::LINK_INSECURE_URL;
+        $this->link_value = [$url, $parameters];
+    }
+
+    /**
+     * Set the item be an external url.
+     *
+     * @param  string $url
+     *
+     * @return void
+     */
+    public function externalUrl($url)
+    {
+        $this->link_type = self::LINK_EXTERNAL_URL;
+        $this->link_value = $url;
+        $this->setOptionOpenNewWindow();
+    }
+
+    /**
+     * Set the title.
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setTitle($value)
+    {
+        $current_title = array_get($this->data, 'title', '');
+        $this->data['title'] = $value;
+        if (array_get($this->data, 'nickname', '') == $current_title) {
+            $this->nickname = $value;
+        }
+    }
+
+    /**
+     * Set the nickname.
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setNickanme($value)
+    {
+        $this->data['nickname'] = camel_case(Str::ascii($value));
+    }
+
+    /**
+     * Set this item active.
+     *
+     * @param boolean $active
+     */
+    public function setActive($active = true)
+    {
+        $this->data['active'] = $active;
+        $this->addLinkAttribute('class', 'active');
+
+        // Activate parents.
+        if (!is_null($this->parent)) {
+            $this->parent->active = $active;
+        }
+    }
+
+    /**
+     * Render this item.
+     *
+     * @return string
+     */
+    public function render($text_only = false)
+    {
+        // Standard tag, or if option setTag used, use that.
+        $item_tag = array_get($this->option, 'tag', 'li');
+
+        $html = ($text_only) ? $this->html : $this->title;
+        if ($this->link_type !== self::LINK_EMPTY) {
+            // Create the link.
+            $html = Html::a($html)->addAttributes($this->link_attribute);
+            $html->openNew($this->getOptionOpenNewWindow());
+
+            // Create the URL.
+            switch ($this->link_type) {
+                case self::LINK_ACTION:
+                    $html->actionHref(...$this->link_type);
+                    break;
+                case self::LINK_ROUTE:
+                    $html->routeHref(...$this->link_type);
+                    break;
+                case self::LINK_URL:
+                    $html->href(secure_url(...$this->link_type));
+                    break;
+                case self::LINK_INSECURE_URL:
+                    $html->href(url(...$this->link_type));
+                    break;
+                case self::LINK_EXTERNAL_URL:
+                    $html->href($this->link_type);
+                    break;
+            }
+        }
+
+        // Create the container and allocate the link.
+        return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
+    }
+
+    /**
+     * Set or get calls.
+     *
+     * @param string $method_name
+     * @param array  $arguments
      *
      * @return mixed
      */
-    public function __get($attribute_name)
+    public function __call($name, $arguments)
     {
-        $attribute_name = snake_case($attribute_name);
+        $method_name = snake_case($name);
+        list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
 
-        if (stripos($attribute_name, 'data_') !== false) {
-            return array_get($this->data, substr($attribute_name, 5), '');
+        // Get calls.
+        if ($action == 'get' || $action == 'set') {
+            $array_func = 'array_'.$action;
+            if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
+                $result = $array_func($this->{$method_name.'_'.$key}, $arguments[0], $arguments[1]);
+
+                return $action == 'get' ? $result : $this;
+            }
+
+            if ($method_name == 'option') {
+                $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+
+                return $action == 'get' ? $result : $this;
+            }
         }
 
-        $get_attribute_method = 'get'.studly_case($attribute_name);
-        if (method_exists($this, $get_attribute_method)) {
-            $this->$get_attribute_method($value);
+        // Manipulate values.
+        if ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend') {
+            if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
+                $input_value = array_get($arguments, 1, '');
+                $current_value = array_get($this->{$method_name.'_'.$key}, $arguments[0], '');
+                $whitespace = ($arguments[0] == 'class') ? ' ' : '';
+
+                if ($arguments[0] == 'class'|| $action == 'remove') {
+                    $current_value = str_replace($input_value, '', $current_value);
+                }
+
+                switch ($action) {
+                    case 'add':
+                    case 'append':
+                        $current_value .= $whitespace.$input_value;
+                        break;
+                    case 'prepend':
+                        $current_value = $input_value.$whitespace.$current_value;
+                        break;
+                }
+
+                array_set($this->{$method_name.'_'.$key}, $arguments[0], $arguments[1]);
+
+                return $this;
+            }
+
+            if ($method_name == 'option') {
+                return array_set($this->option, $key, array_get($arguments, 0, true));
+            }
+        }
+
+        // Use the magic get/set instead
+        if (count($arguments) == 0) {
+            return $this->$name;
+        }
+
+        $this->$name = array_get($arguments, 0, '');
+    }
+
+    /**
+     * Set a data value by a name.
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        $name = snake_case($name);
+        $set_method = 'set'.studly_case($name);
+        if (method_exists($this, $set_method)) {
+            $this->$set_method($value);
 
             return;
         }
 
-        return array_get($this->attributes, $attribute_name, '');
+        $this->data[$name] = $value;
+    }
+
+    /**
+     * Return the value of data by name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        $name = snake_case($name);
+        $get_method = 'get'.studly_case($name);
+        if (method_exists($this, $get_method)) {
+            $this->$get_method($value);
+
+            return;
+        }
+
+        return array_get($this->data, $name, '');
     }
 }

@@ -2,21 +2,37 @@
 
 namespace Bluora\LaravelNavigationBuilder;
 
+use Bluora\LaravelHtmlGenerator\Html;
+
 class Menu
 {
-    /**
-     * The menu name.
-     *
-     * @var string
-     */
-    private $name;
-
     /**
      * Item collection.
      *
      * @var Illuminate\Support\Collection
      */
     private $item_collection;
+
+    /**
+     * Menu data.
+     *
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * Menu options.
+     *
+     * @var array
+     */
+    private $option = [];
+
+    /**
+     * Menu attributes.
+     *
+     * @var array
+     */
+    private $attribute = [];
 
     /**
      * Initializing the menu.
@@ -36,7 +52,7 @@ class Menu
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    public function addMenu($title)
+    public function addItem($title)
     {
         $item = new Item($this, $title);
         $this->item_collection->push($item);
@@ -45,7 +61,7 @@ class Menu
     }
 
     /**
-     * Alias for addMenu.
+     * Alias for addItem.
      *
      * @param string $title
      *
@@ -53,7 +69,7 @@ class Menu
      */
     public function add($title)
     {
-        return $this->addMenu($title);
+        return $this->addItem($title);
     }
 
     /**
@@ -142,6 +158,37 @@ class Menu
     }
 
     /**
+     * Render this menu and it's children.
+     *
+     * @param  string $tag
+     *
+     * @return string
+     */
+    public function render($parent_id = 0)
+    {
+        // Standard tag, or if option setTag used, use that.
+        $menu_tag = array_get($this->option, 'tag', 'ul');
+        $item_tag = array_get($this->option, 'itemTag', 'li');
+        $html = '';
+
+        $items = $this->item_collection;
+
+        // Render from a specific menu item.
+        if ($parent_id > 0) {
+            $items->whereParentId($parent_id);
+        }
+
+        // Generate each of the items.
+        foreach ($items as $item) {
+            $item->setOptionItemTag($item_tag);
+            $html .= $item->render();
+        }
+
+        // Create the container and allocate the link.
+        return Html::$menu_tag($html)->addAttributes($this->attribute)->s();
+    }
+
+    /**
      * Search the menu based on a given attribute.
      *
      * @param string $method_name
@@ -149,10 +196,10 @@ class Menu
      *
      * @return \Bluora\LaravelNavigationBuilder\Collection|\Bluora\LaravelNavigationBuilder\Item
      */
-    public function __call($method_name, $arguments)
+    public function __call($name, $arguments)
     {
         // $this->whereTitle(...)
-        preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $method_name, $where_matches);
+        preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $name, $where_matches);
 
         if (count($where_matches) > 0) {
             $attribute_name = snake_case($where_matches[1]);
@@ -162,7 +209,7 @@ class Menu
         }
 
         // $this->getByTitle(...)
-        preg_match('/^[G|g]etBy([a-zA-Z0-9_]+)$/', $method_name, $get_by_matches);
+        preg_match('/^[G|g]etBy([a-zA-Z0-9_]+)$/', $name, $get_by_matches);
 
         if (count($get_by_matches) > 0) {
             $attribute_name = snake_case($get_by_matches[1]);
@@ -171,5 +218,104 @@ class Menu
 
             return (count($result)) ? $result->first() : null;
         }
+
+        $method_name = snake_case($name);
+        list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
+
+        // $this->getAttributeClass() | $this->getAttributeClass(...)
+        if ($action == 'get' || $action == 'set') {
+            $array_func = 'array_'.$action;
+            
+            if ($method_name == 'attribute') {
+                $result = $array_func($this->$method_name, $arguments[0], $arguments[1]);
+                return $action == 'get' ? $result : $this;
+            }
+            
+            if ($method_name == 'option') {
+                $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+                return $action == 'get' ? $result : $this;
+            }
+        }
+
+        // $this->addAttribute('class') | $this->removeAttribute('class')
+        // || $this->appendAttribute('class') | $this->prependAttribute('class')
+        if ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend') {
+            
+            if ($method_name == 'attribute') {
+                $input_value = array_get($arguments, 1, '');
+                $current_value = array_get($this->$method_name, $arguments[0], '');
+                $whitespace = (strlen(trim($current_value)) > 0 && $arguments[0] == 'class') ? ' ' : '';
+
+                if ($arguments[0] == 'class' || $action == 'remove') {
+                    $current_value = str_replace($input_value, '', $current_value);
+                }
+
+                switch ($action) {
+                    case 'add':
+                    case 'append':
+                        $current_value .= $whitespace.$input_value;
+                        break;
+                    case 'prepend':
+                        $current_value = $input_value.$whitespace.$current_value;
+                        break;
+                }
+
+                array_set($this->$method_name, $arguments[0], trim($current_value));
+
+                return $this;
+            }
+            
+            if ($method_name == 'option') {
+                return array_set($this->option, $key, array_get($arguments, 0, true));
+            }
+        }
+
+        // Use the magic get/set instead
+        if (count($arguments) == 0) {
+            return $this->$name;
+        }
+
+        $this->$name = array_get($arguments, 0, '');
+    }
+
+    /**
+     * Set a data value by a name.
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        $name = snake_case($name);
+        $set_method = 'set'.studly_case($name);
+        if (method_exists($this, $set_method)) {
+            $this->$set_method($value);
+
+            return;
+        }
+
+        $this->data[$name] = $value;
+    }
+
+    /**
+     * Return the value of data by name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        $name = snake_case($name);
+        $get_method = 'get'.studly_case($name);
+        if (method_exists($this, $get_method)) {
+            $this->$get_method($value);
+
+            return;
+        }
+
+        return array_get($this->data, $name, '');
     }
 }

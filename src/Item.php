@@ -413,12 +413,11 @@ class Item
         // Manipulate values.
         if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
             && ($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-
             $input_value = array_get($arguments, 1, '');
             $current_value = array_get($this->{$method_name.'_'.$key}, $arguments[0], '');
             $whitespace = ($arguments[0] == 'class') ? ' ' : '';
 
-            if ($arguments[0] == 'class'|| $action == 'remove') {
+            if ($arguments[0] == 'class' || $action == 'remove') {
                 $current_value = str_replace($input_value, '', $current_value);
             }
 

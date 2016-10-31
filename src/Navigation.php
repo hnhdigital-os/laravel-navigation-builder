@@ -29,7 +29,7 @@ class Navigation
      *
      * @return Bluora\LaravelNavigationBuilder\Menu;
      */
-    public function createMenu(string $name, \Closure $allocation_callback = null)
+    public function createMenu($name, \Closure $allocation_callback = null)
     {
         // Create menu.
         $menu = new Menu($name);

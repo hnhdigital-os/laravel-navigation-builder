@@ -151,7 +151,7 @@ class Menu
      *
      * @param  string $name
      *
-     * @return mixed
+     * @return string
      */
     public function getAttribute($name, $default = null)
     {
@@ -164,7 +164,7 @@ class Menu
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return mixed
+     * @return \Bluora\LaravelNavigationBuilder\Item
      */
     public function setAttribute($name, $value)
     {
@@ -179,7 +179,7 @@ class Menu
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return mixed
+     * @return \Bluora\LaravelNavigationBuilder\Item
      */
     public function addAttribute($name, $value)
     {
@@ -196,7 +196,7 @@ class Menu
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return mixed
+     * @return \Bluora\LaravelNavigationBuilder\Item
      */
     public function removeAttribute($name, $value)
     {
@@ -213,7 +213,7 @@ class Menu
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return mixed
+     * @return \Bluora\LaravelNavigationBuilder\Item
      */
     public function appendAttribute($name, $value)
     {
@@ -230,7 +230,7 @@ class Menu
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return mixed
+     * @return \Bluora\LaravelNavigationBuilder\Item
      */
     public function prependAttribute($name, $value)
     {
@@ -241,6 +241,14 @@ class Menu
         return $this;
     }
 
+    /**
+     * Clean attribute value before required change.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return array
+     */
     private function manipulateAttribute($name, $value)
     {
         $current_value = array_get($this->attribute, $name, '');

@@ -87,7 +87,6 @@ class Menu
         $filter_result = new Collection();
 
         $this->item_collection->filter(function ($item) use ($property_name, $value, $include_children, &$filter_result) {
-
             if (!isset($item->$property_name)) {
                 return false;
             }
@@ -160,7 +159,7 @@ class Menu
     /**
      * Render this menu and it's children.
      *
-     * @param  string $tag
+     * @param string $tag
      *
      * @return string
      */
@@ -225,14 +224,16 @@ class Menu
         // $this->getAttribute('class') | $this->setAttribute('class', '')
         if ($action == 'get' || $action == 'set') {
             $array_func = 'array_'.$action;
-            
+
             if ($method_name == 'attribute') {
                 $result = $array_func($this->$method_name, $arguments[0], array_get($arguments, 1, null));
+
                 return $action == 'get' ? $result : $this;
             }
-            
+
             if ($method_name == 'option') {
                 $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+
                 return $action == 'get' ? $result : $this;
             }
         }
@@ -241,7 +242,6 @@ class Menu
         // || $this->appendAttribute('class', '') | $this->prependAttribute('class', '')
         if ($method_name == 'attribute'
             && ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')) {
-            
             $input_value = array_get($arguments, 1, '');
             $current_value = array_get($this->$method_name, $arguments[0], '');
             $whitespace = (strlen(trim($current_value)) > 0 && $arguments[0] == 'class') ? ' ' : '';
@@ -299,6 +299,7 @@ class Menu
     public function __get($name)
     {
         $name = snake_case($name);
+
         return array_get($this->data, $name, '');
     }
 }

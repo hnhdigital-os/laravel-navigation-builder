@@ -28,7 +28,7 @@ class NavigationTest extends TestCase
     public function testCreateMenuWithCallback()
     {
         $navigation = new Navigation();
-        $menu = $navigation->createMenu('main', function($menu) {
+        $menu = $navigation->createMenu('main', function ($menu) {
             $menu->add('Home');
         });
 

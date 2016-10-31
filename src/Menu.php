@@ -183,9 +183,7 @@ class Menu
      */
     public function addAttribute($name, $value)
     {
-        $current_value = array_get($this->attribute, $name, '');
-        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
-        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
 
         array_set($this->attribute, $name, $current_value.$whitespace.$value);
 
@@ -202,9 +200,7 @@ class Menu
      */
     public function removeAttribute($name, $value)
     {
-        $current_value = array_get($this->attribute, $name, '');
-        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
-        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
 
         array_set($this->attribute, $name, $current_value);
 
@@ -221,9 +217,7 @@ class Menu
      */
     public function appendAttribute($name, $value)
     {
-        $current_value = array_get($this->attribute, $name, '');
-        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
-        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
 
         array_set($this->attribute, $name, $current_value.$whitespace.$value);
 
@@ -240,13 +234,20 @@ class Menu
      */
     public function prependAttribute($name, $value)
     {
-        $current_value = array_get($this->attribute, $name, '');
-        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
-        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
 
         array_set($this->attribute, $name, $value.$whitespace.$current_value);
 
         return $this;
+    }
+
+    private function manipulateAttribute($name, $value)
+    {
+        $current_value = array_get($this->attribute, $name, '');
+        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
+        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+
+        return [$current_value, $whitespace];
     }
 
     /**

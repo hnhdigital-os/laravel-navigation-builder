@@ -73,14 +73,34 @@ class MenuTest extends TestCase
 
         $this->assertNotEquals($home_item, null);
 
-        $home_item->add('Profile')
+        $profile_item = $home_item->add('Profile')
             ->route('profile::edit-profile')
             ->html('Profile')
             ->nickname('profile_edit_profile');
 
         $parent_id = $home_item->getId();
 
-        $this->assertEquals('<ul><li><a target="_blank" href="profile::edit-profile">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<ul><li><a href="profile::edit-profile">Profile</a></li></ul>', $menu->render($parent_id));
+
+        $profile_item->action('Profile@ProfileController');
+        $this->assertEquals('<ul><li><a href="Profile@ProfileController">Profile</a></li></ul>', $menu->render($parent_id));
+
+        $profile_item->url('profile/');
+        $this->assertEquals('<ul><li><a href="https://localhost/profile/">Profile</a></li></ul>', $menu->render($parent_id));
+
+        $profile_item->insecureUrl('profile/');
+        $this->assertEquals('<ul><li><a href="https://localhost/profile/">Profile</a></li></ul>', $menu->render($parent_id));
+
+        $profile_item->externalUrl('google.com');
+        $this->assertEquals('<ul><li><a target="_blank" href="http://google.com">Profile</a></li></ul>', $menu->render($parent_id));
+
+        $profile_item->setItemAttribute('class', 'class1');
+
+        $profile_item->appendItemAttribute('class', 'class2');
+        $this->assertEquals('class1 class2', $profile_item->getItemAttribute('class'));
+
+        $profile_item->prependItemAttribute('class', 'class3');
+        $this->assertEquals('class3 class1 class2', $profile_item->getItemAttribute('class'));
 
         // Find home item.
         $home_item = $menu->getByTitle('Home');

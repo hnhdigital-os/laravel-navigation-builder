@@ -338,7 +338,7 @@ class Item
         if ($this->link_type !== self::LINK_EMPTY) {
             // Create the link.
             $html = Html::a($html)->addAttributes($this->link_attribute);
-            $html->openNew($this->getOptionOpenNewWindow());
+            $html->openNew(!$this->getOptionOpenNewWindow());
 
             // Create the URL.
             switch ($this->link_type) {
@@ -355,7 +355,9 @@ class Item
                     $html->href(url(...$this->link_value));
                     break;
                 case self::LINK_EXTERNAL_URL:
-                    $html->href($this->link_value);
+                    $url = stripos($this->link_value[0], 'http') === false ? 'http://' : '';
+                    $url .= $this->link_value[0];
+                    $html->href($url);
                     break;
             }
         }
@@ -399,7 +401,8 @@ class Item
             }
 
             if ($method_name == 'option') {
-                $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+                $default = $action == 'get' ? false : true;
+                $result = $array_func($this->option, $key, array_get($arguments, 0, $default));
 
                 return $action == 'get' ? $result : $this;
             }
@@ -408,34 +411,30 @@ class Item
         }
 
         // Manipulate values.
-        if ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend') {
-            if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-                $input_value = array_get($arguments, 1, '');
-                $current_value = array_get($this->{$method_name.'_'.$key}, $arguments[0], '');
-                $whitespace = ($arguments[0] == 'class') ? ' ' : '';
+        if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
+            && ($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
 
-                if ($arguments[0] == 'class'|| $action == 'remove') {
-                    $current_value = str_replace($input_value, '', $current_value);
-                }
+            $input_value = array_get($arguments, 1, '');
+            $current_value = array_get($this->{$method_name.'_'.$key}, $arguments[0], '');
+            $whitespace = ($arguments[0] == 'class') ? ' ' : '';
 
-                switch ($action) {
-                    case 'add':
-                    case 'append':
-                        $current_value .= $whitespace.$input_value;
-                        break;
-                    case 'prepend':
-                        $current_value = $input_value.$whitespace.$current_value;
-                        break;
-                }
-
-                array_set($this->{$method_name.'_'.$key}, $arguments[0], $arguments[1]);
-
-                return $this;
+            if ($arguments[0] == 'class'|| $action == 'remove') {
+                $current_value = str_replace($input_value, '', $current_value);
             }
 
-            if ($method_name == 'option') {
-                return array_set($this->option, $key, array_get($arguments, 0, true));
+            switch ($action) {
+                case 'add':
+                case 'append':
+                    $current_value .= $whitespace.$input_value;
+                    break;
+                case 'prepend':
+                    $current_value = $input_value.$whitespace.$current_value;
+                    break;
             }
+
+            array_set($this->{$method_name.'_'.$key}, $arguments[0], trim($current_value));
+
+            return $this;
         }
 
         // Use the magic get/set instead

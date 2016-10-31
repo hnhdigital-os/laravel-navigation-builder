@@ -3,6 +3,7 @@
 namespace Bluora\LaravelNavigationBuilder;
 
 use Bluora\LaravelHtmlGenerator\Html;
+use Illuminate\Support\Str;
 
 class Item
 {
@@ -63,20 +64,6 @@ class Item
     private $menu;
 
     /**
-     * Reference to this menu parent id.
-     *
-     * @var string
-     */
-    private $parent_id;
-
-    /**
-     * Reference to this menu parent.
-     *
-     * @var string
-     */
-    private $parent;
-
-    /**
      * Item data.
      *
      * - title
@@ -130,7 +117,7 @@ class Item
      */
     public function add($title)
     {
-        $item = $this->addMenu($title);
+        $item = $this->menu->addItem($title);
         $item->parent_id = $this->id;
         $item->parent = $this;
 
@@ -173,6 +160,7 @@ class Item
     {
         $method_name = $action.ucfirst($name).'Attribute';
         $item->$method_name($value);
+
         return $this;
     }
 
@@ -190,6 +178,7 @@ class Item
     {
         $method_name = $action.ucfirst($name).'Attribute';
         $item->$method_name($value);
+
         return $this;
     }
 
@@ -205,6 +194,8 @@ class Item
     {
         $this->link_type = self::LINK_ACTION;
         $this->link_value = [$name, $parameters];
+
+        return $this;
     }
 
     /**
@@ -219,6 +210,8 @@ class Item
     {
         $this->link_type = self::LINK_ROUTE;
         $this->link_value = [$name, $parameters];
+
+        return $this;
     }
 
     /**
@@ -233,6 +226,8 @@ class Item
     {
         $this->link_type = self::LINK_URL;
         $this->link_value = [$url, $parameters];
+
+        return $this;
     }
 
     /**
@@ -247,6 +242,8 @@ class Item
     {
         $this->link_type = self::LINK_INSECURE_URL;
         $this->link_value = [$url, $parameters];
+
+        return $this;
     }
 
     /**
@@ -259,8 +256,10 @@ class Item
     public function externalUrl($url)
     {
         $this->link_type = self::LINK_EXTERNAL_URL;
-        $this->link_value = $url;
+        $this->link_value = [$url];
         $this->setOptionOpenNewWindow();
+
+        return $this;
     }
 
     /**
@@ -277,6 +276,8 @@ class Item
         if (array_get($this->data, 'nickname', '') == $current_title) {
             $this->nickname = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -288,7 +289,21 @@ class Item
      */
     public function setNickanme($value)
     {
-        $this->data['nickname'] = camel_case(Str::ascii($value));
+        $this->data['nickname'] = strtolower(Str::ascii($value));
+
+        return $this;
+    }
+
+    /**
+     * Get the nickname.
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    public function getNickname()
+    {
+        return strtolower(Str::ascii($this->data['nickname']));
     }
 
     /**
@@ -305,6 +320,8 @@ class Item
         if (!is_null($this->parent)) {
             $this->parent->active = $active;
         }
+
+        return $this;
     }
 
     /**
@@ -326,25 +343,37 @@ class Item
             // Create the URL.
             switch ($this->link_type) {
                 case self::LINK_ACTION:
-                    $html->actionHref(...$this->link_type);
+                    $html->actionHref(...$this->link_value);
                     break;
                 case self::LINK_ROUTE:
-                    $html->routeHref(...$this->link_type);
+                    $html->routeHref(...$this->link_value);
                     break;
                 case self::LINK_URL:
-                    $html->href(secure_url(...$this->link_type));
+                    $html->href(secure_url(...$this->link_value));
                     break;
                 case self::LINK_INSECURE_URL:
-                    $html->href(url(...$this->link_type));
+                    $html->href(url(...$this->link_value));
                     break;
                 case self::LINK_EXTERNAL_URL:
-                    $html->href($this->link_type);
+                    $html->href($this->link_value);
                     break;
             }
         }
 
         // Create the container and allocate the link.
         return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
+    }
+
+    /**
+     * Check if this item has the given property.
+     *
+     * @param string $property_name
+     *
+     * @return boolean
+     */
+    public function __isset($property_name)
+    {
+        return isset($this->data[$property_name]);
     }
 
     /**
@@ -364,7 +393,7 @@ class Item
         if ($action == 'get' || $action == 'set') {
             $array_func = 'array_'.$action;
             if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-                $result = $array_func($this->{$method_name.'_'.$key}, $arguments[0], $arguments[1]);
+                $result = $array_func($this->{$method_name.'_'.$key}, $arguments[0], array_get($arguments, 1, null));
 
                 return $action == 'get' ? $result : $this;
             }
@@ -374,6 +403,8 @@ class Item
 
                 return $action == 'get' ? $result : $this;
             }
+
+            $name = $method_name;
         }
 
         // Manipulate values.
@@ -413,6 +444,8 @@ class Item
         }
 
         $this->$name = array_get($arguments, 0, '');
+
+        return $this;
     }
 
     /**
@@ -448,9 +481,7 @@ class Item
         $name = snake_case($name);
         $get_method = 'get'.studly_case($name);
         if (method_exists($this, $get_method)) {
-            $this->$get_method($value);
-
-            return;
+            return $this->$get_method();
         }
 
         return array_get($this->data, $name, '');

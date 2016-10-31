@@ -18,8 +18,8 @@ class NavigationTest extends TestCase
 
         $collection = (new Collection())->push($menu, 'main');
 
-        $this->assertEquals($menu, $navigation->getMenu('main'));
-        $this->assertEquals($collection->values(), $navigation->getMenus()->values());
+        $this->assertEquals($navigation->getMenu('main'), $menu);
+        $this->assertEquals($navigation->getMenus()->values(), $collection->values());
     }
 
     /**
@@ -35,7 +35,7 @@ class NavigationTest extends TestCase
         $item = $menu->first();
 
         $this->assertNotEquals($item, null);
-        $this->assertEquals($item->title, 'Home');
-        $this->assertEquals($item->nickname, 'Home');
+        $this->assertEquals('Home', $item->title);
+        $this->assertEquals('home', $item->nickname);
     }
 }

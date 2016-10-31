@@ -25,11 +25,11 @@ class Navigation
      * Create new menu.
      *
      * @param string  $name
-     * @param Closure $item_allocation_callback
+     * @param Closure $allocation_callback
      *
      * @return Bluora\LaravelNavigationBuilder\Menu;
      */
-    public function createMenu(string $name, \Closure $item_allocation_callback = null)
+    public function createMenu(string $name, \Closure $allocation_callback = null)
     {
         // Create menu.
         $menu = new Menu($name);
@@ -41,8 +41,8 @@ class Navigation
         \view::share($name, $menu);
 
         // Allocate menu items, if provided.
-        if (is_callable($item_allocation_callback)) {
-            $item_allocation_callback($menu);
+        if (is_callable($allocation_callback)) {
+            $allocation_callback($menu);
         }
 
         return $menu;

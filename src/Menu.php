@@ -73,26 +73,26 @@ class Menu
     }
 
     /**
-     * Filter items by attribute.
+     * Filter items by property.
      *
-     * @param string $attribute_name
+     * @param string $property_name
      * @param string $value
      * @param bool   $include_children
      *
      * @return \Bluora\LaravelNavigationBuilder\Collection
      */
-    public function filter($attribute_name, $value, $include_children = false)
+    public function filter($property_name, $value, $include_children = false)
     {
         // Result collection.
         $filter_result = new Collection();
 
+        $this->item_collection->filter(function ($item) use ($property_name, $value, $include_children, &$filter_result) {
 
-        $this->item_collection->each(function ($item) use ($attribute_name, $value, &$filter_result) {
-            if (!$item->hasProperty($attribute_name)) {
+            if (!isset($item->$property_name)) {
                 return false;
             }
 
-            if ($item->$attribute_name == $value) {
+            if ($item->$property_name == $value) {
                 $filter_result->push($item);
 
                 // Check if item has any children
@@ -164,7 +164,7 @@ class Menu
      *
      * @return string
      */
-    public function render($parent_id = 0)
+    public function render($parent_id = false)
     {
         // Standard tag, or if option setTag used, use that.
         $menu_tag = array_get($this->option, 'tag', 'ul');
@@ -174,8 +174,8 @@ class Menu
         $items = $this->item_collection;
 
         // Render from a specific menu item.
-        if ($parent_id > 0) {
-            $items->whereParentId($parent_id);
+        if ($parent_id !== false) {
+            $items = $this->whereParentId($parent_id);
         }
 
         // Generate each of the items.
@@ -202,19 +202,19 @@ class Menu
         preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $name, $where_matches);
 
         if (count($where_matches) > 0) {
-            $attribute_name = snake_case($where_matches[1]);
-            $attribute_name = (stripos($attribute_name, 'data_') !== false) ? str_replace('_', '-', $attribute_name) : $attribute_name;
+            $property_name = snake_case($where_matches[1]);
+            $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
 
-            return $this->filter($attribute_name, ...$arguments);
+            return $this->filter($property_name, ...$arguments);
         }
 
         // $this->getByTitle(...)
-        preg_match('/^[G|g]etBy([a-zA-Z0-9_]+)$/', $name, $get_by_matches);
+        preg_match('/^[G|g]et[B|b]y([a-zA-Z0-9_]+)$/', $name, $get_by_matches);
 
         if (count($get_by_matches) > 0) {
-            $attribute_name = snake_case($get_by_matches[1]);
-            $attribute_name = (stripos($attribute_name, 'data_') !== false) ? str_replace('_', '-', $attribute_name) : $attribute_name;
-            $result = $this->filter($attribute_name, ...$arguments);
+            $property_name = snake_case($get_by_matches[1]);
+            $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
+            $result = $this->filter($property_name, ...$arguments);
 
             return (count($result)) ? $result->first() : null;
         }
@@ -227,7 +227,7 @@ class Menu
             $array_func = 'array_'.$action;
             
             if ($method_name == 'attribute') {
-                $result = $array_func($this->$method_name, $arguments[0], $arguments[1]);
+                $result = $array_func($this->$method_name, $arguments[0], array_get($arguments, 1, null));
                 return $action == 'get' ? $result : $this;
             }
             

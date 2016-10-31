@@ -222,7 +222,7 @@ class Menu
         $method_name = snake_case($name);
         list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
 
-        // $this->getAttributeClass() | $this->getAttributeClass(...)
+        // $this->getAttribute('class') | $this->setAttribute('class', '')
         if ($action == 'get' || $action == 'set') {
             $array_func = 'array_'.$action;
             
@@ -237,8 +237,8 @@ class Menu
             }
         }
 
-        // $this->addAttribute('class') | $this->removeAttribute('class')
-        // || $this->appendAttribute('class') | $this->prependAttribute('class')
+        // $this->addAttribute('class', '') | $this->removeAttribute('class')
+        // || $this->appendAttribute('class', '') | $this->prependAttribute('class', '')
         if ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend') {
             
             if ($method_name == 'attribute') {
@@ -276,6 +276,8 @@ class Menu
         }
 
         $this->$name = array_get($arguments, 0, '');
+
+        return $this;
     }
 
     /**
@@ -289,13 +291,6 @@ class Menu
     public function __set($name, $value)
     {
         $name = snake_case($name);
-        $set_method = 'set'.studly_case($name);
-        if (method_exists($this, $set_method)) {
-            $this->$set_method($value);
-
-            return;
-        }
-
         $this->data[$name] = $value;
     }
 
@@ -309,13 +304,6 @@ class Menu
     public function __get($name)
     {
         $name = snake_case($name);
-        $get_method = 'get'.studly_case($name);
-        if (method_exists($this, $get_method)) {
-            $this->$get_method($value);
-
-            return;
-        }
-
         return array_get($this->data, $name, '');
     }
 }

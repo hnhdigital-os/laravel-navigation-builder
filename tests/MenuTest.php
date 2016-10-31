@@ -21,6 +21,7 @@ class MenuTest extends TestCase
         $menu->addAttribute('class', 'nav');
 
         $this->assertEquals('<ul class="nav"></ul>', $menu->render());
+        $this->assertEquals('nav', $menu->getAttribute('class'));
 
         $menu->addAttribute('class', 'foo');
         $this->assertEquals('<ul class="nav foo"></ul>', $menu->render());
@@ -34,9 +35,13 @@ class MenuTest extends TestCase
         $menu->setOptionTag('ul');
         $menu->appendAttribute('class', 'foo');
         $this->assertEquals('<ul class="nav foo"></ul>', $menu->render());
+        $this->assertEquals('ul', $menu->getOptionTag('ul'));
 
         $menu = $menu->prependAttribute('class', 'foo');
         $this->assertEquals('<ul class="foo nav"></ul>', $menu->render());
+
+        $menu->name('test1');
+        $this->assertEquals('test1', $menu->name());
     }
 
     /**

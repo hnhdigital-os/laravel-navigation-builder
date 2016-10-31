@@ -147,6 +147,109 @@ class Menu
     }
 
     /**
+     * Get attribute by name.
+     *
+     * @param  string $name
+     *
+     * @return mixed
+     */
+    public function getAttribute($name, $default = null)
+    {
+        return array_get($this->attribute, $name, $default);
+    }
+
+    /**
+     * Set attribute by name.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return mixed
+     */
+    public function setAttribute($name, $value)
+    {
+        array_set($this->attribute, $name, $value);
+
+        return $this;
+    }
+
+    /**
+     * Add attribute by name.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return mixed
+     */
+    public function addAttribute($name, $value)
+    {
+        $current_value = array_get($this->attribute, $name, '');
+        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
+        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+
+        array_set($this->attribute, $name, $current_value.$whitespace.$value);
+
+        return $this;
+    }
+
+    /**
+     * Remove attribute by name.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return mixed
+     */
+    public function removeAttribute($name, $value)
+    {
+        $current_value = array_get($this->attribute, $name, '');
+        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
+        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+
+        array_set($this->attribute, $name, $current_value);
+
+        return $this;
+    }
+
+    /**
+     * Append to attribute by name.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return mixed
+     */
+    public function appendAttribute($name, $value)
+    {
+        $current_value = array_get($this->attribute, $name, '');
+        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
+        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+
+        array_set($this->attribute, $name, $current_value.$whitespace.$value);
+
+        return $this;
+    }
+
+    /**
+     * Prepend to attribute by name.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     *
+     * @return mixed
+     */
+    public function prependAttribute($name, $value)
+    {
+        $current_value = array_get($this->attribute, $name, '');
+        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
+        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+
+        array_set($this->attribute, $name, $value.$whitespace.$current_value);
+
+        return $this;
+    }
+
+    /**
      * Return the last item in the collection.
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
@@ -221,48 +324,14 @@ class Menu
         $method_name = snake_case($name);
         list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
 
-        // $this->getAttribute('class') | $this->setAttribute('class', '')
+        // $this->getOption[...](), $this->setOption[...]()
         if ($action == 'get' || $action == 'set') {
             $array_func = 'array_'.$action;
-
-            if ($method_name == 'attribute') {
-                $result = $array_func($this->$method_name, $arguments[0], array_get($arguments, 1, null));
-
-                return $action == 'get' ? $result : $this;
-            }
-
             if ($method_name == 'option') {
                 $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
 
                 return $action == 'get' ? $result : $this;
             }
-        }
-
-        // $this->addAttribute('class', '') | $this->removeAttribute('class')
-        // || $this->appendAttribute('class', '') | $this->prependAttribute('class', '')
-        if ($method_name == 'attribute'
-            && ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')) {
-            $input_value = array_get($arguments, 1, '');
-            $current_value = array_get($this->$method_name, $arguments[0], '');
-            $whitespace = (strlen(trim($current_value)) > 0 && $arguments[0] == 'class') ? ' ' : '';
-
-            if ($arguments[0] == 'class' || $action == 'remove') {
-                $current_value = str_replace($input_value, '', $current_value);
-            }
-
-            switch ($action) {
-                case 'add':
-                case 'append':
-                    $current_value .= $whitespace.$input_value;
-                    break;
-                case 'prepend':
-                    $current_value = $input_value.$whitespace.$current_value;
-                    break;
-            }
-
-            array_set($this->$method_name, $arguments[0], trim($current_value));
-
-            return $this;
         }
 
         // Use the magic get/set instead

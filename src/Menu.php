@@ -239,35 +239,30 @@ class Menu
 
         // $this->addAttribute('class', '') | $this->removeAttribute('class')
         // || $this->appendAttribute('class', '') | $this->prependAttribute('class', '')
-        if ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend') {
+        if ($method_name == 'attribute'
+            && ($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')) {
             
-            if ($method_name == 'attribute') {
-                $input_value = array_get($arguments, 1, '');
-                $current_value = array_get($this->$method_name, $arguments[0], '');
-                $whitespace = (strlen(trim($current_value)) > 0 && $arguments[0] == 'class') ? ' ' : '';
+            $input_value = array_get($arguments, 1, '');
+            $current_value = array_get($this->$method_name, $arguments[0], '');
+            $whitespace = (strlen(trim($current_value)) > 0 && $arguments[0] == 'class') ? ' ' : '';
 
-                if ($arguments[0] == 'class' || $action == 'remove') {
-                    $current_value = str_replace($input_value, '', $current_value);
-                }
-
-                switch ($action) {
-                    case 'add':
-                    case 'append':
-                        $current_value .= $whitespace.$input_value;
-                        break;
-                    case 'prepend':
-                        $current_value = $input_value.$whitespace.$current_value;
-                        break;
-                }
-
-                array_set($this->$method_name, $arguments[0], trim($current_value));
-
-                return $this;
+            if ($arguments[0] == 'class' || $action == 'remove') {
+                $current_value = str_replace($input_value, '', $current_value);
             }
-            
-            if ($method_name == 'option') {
-                return array_set($this->option, $key, array_get($arguments, 0, true));
+
+            switch ($action) {
+                case 'add':
+                case 'append':
+                    $current_value .= $whitespace.$input_value;
+                    break;
+                case 'prepend':
+                    $current_value = $input_value.$whitespace.$current_value;
+                    break;
             }
+
+            array_set($this->$method_name, $arguments[0], trim($current_value));
+
+            return $this;
         }
 
         // Use the magic get/set instead

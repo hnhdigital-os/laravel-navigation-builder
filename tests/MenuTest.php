@@ -2,7 +2,6 @@
 
 namespace Bluora\LaravelNavigationBuilder\Tests;
 
-use Bluora\LaravelNavigationBuilder\Collection;
 use Bluora\LaravelNavigationBuilder\Menu;
 use PHPUnit\Framework\TestCase;
 
@@ -57,7 +56,6 @@ class MenuTest extends TestCase
         $profile_item = $menu->add('Profile')->addItemAttribute('class', 'active');
         $this->assertEquals('<ul><li>Home</li><li class="active">Profile</li></ul>', $menu->render());
         $this->assertEquals('active', $profile_item->getItemAttribute('class'));
-        
     }
 
     /**

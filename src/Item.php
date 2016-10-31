@@ -148,11 +148,11 @@ class Item
 
     /**
      * Modify an attribute on the item.
-     * Alias for addItemAttribute($name, $value)
+     * Alias for addItemAttribute($name, $value).
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  string $action
+     * @param string $name
+     * @param string $value
+     * @param string $action
      *
      * @return Item
      */
@@ -166,11 +166,11 @@ class Item
 
     /**
      * Modify an attribute on the link.
-     * Alias for addLinkAttribute($name, $value)
+     * Alias for addLinkAttribute($name, $value).
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  string $action
+     * @param string $name
+     * @param string $value
+     * @param string $action
      *
      * @return Item
      */
@@ -185,8 +185,8 @@ class Item
     /**
      * Set the item to be a action.
      *
-     * @param  string $route_name
-     * @param  array $parameters
+     * @param string $route_name
+     * @param array  $parameters
      *
      * @return void
      */
@@ -201,8 +201,8 @@ class Item
     /**
      * Set the item to be a route.
      *
-     * @param  string $name
-     * @param  array $parameters
+     * @param string $name
+     * @param array  $parameters
      *
      * @return void
      */
@@ -217,8 +217,8 @@ class Item
     /**
      * Set the item to be a url.
      *
-     * @param  string $url
-     * @param  array $parameters
+     * @param string $url
+     * @param array  $parameters
      *
      * @return void
      */
@@ -233,8 +233,8 @@ class Item
     /**
      * Set the item to be a insecure url.
      *
-     * @param  string $url
-     * @param  array $parameters
+     * @param string $url
+     * @param array  $parameters
      *
      * @return void
      */
@@ -249,7 +249,7 @@ class Item
     /**
      * Set the item be an external url.
      *
-     * @param  string $url
+     * @param string $url
      *
      * @return void
      */
@@ -309,7 +309,7 @@ class Item
     /**
      * Set this item active.
      *
-     * @param boolean $active
+     * @param bool $active
      */
     public function setActive($active = true)
     {
@@ -371,7 +371,7 @@ class Item
      *
      * @param string $property_name
      *
-     * @return boolean
+     * @return bool
      */
     public function __isset($property_name)
     {

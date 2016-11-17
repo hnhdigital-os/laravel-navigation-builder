@@ -57,6 +57,13 @@ class Item
     private $link_type = self::LINK_EMPTY;
 
     /**
+     * Object reference to the parent.
+     *
+     * @var \Bluora\LaravelNavigationBuilder\Item
+     */
+    public $parent;
+
+    /**
      * Object reference to the menu.
      *
      * @var \Bluora\LaravelNavigationBuilder\Menu
@@ -114,6 +121,8 @@ class Item
      * Add a menu item as a child.
      *
      * @param string $title
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function add($title)
     {
@@ -154,7 +163,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return Item
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function item($name, $value, $action = 'add')
     {
@@ -172,7 +181,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return Item
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function link($name, $value, $action = 'add')
     {
@@ -188,12 +197,13 @@ class Item
      * @param string $route_name
      * @param array  $parameters
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function action($name, ...$parameters)
     {
         $this->link_type = self::LINK_ACTION;
         $this->link_value = [$name, $parameters];
+        $this->checkActive();
 
         return $this;
     }
@@ -204,12 +214,13 @@ class Item
      * @param string $name
      * @param array  $parameters
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function route($name, ...$parameters)
     {
         $this->link_type = self::LINK_ROUTE;
         $this->link_value = [$name, $parameters];
+        $this->checkActive();
 
         return $this;
     }
@@ -220,12 +231,13 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function url($url, ...$parameters)
     {
         $this->link_type = self::LINK_URL;
         $this->link_value = [$url, $parameters];
+        $this->checkActive();
 
         return $this;
     }
@@ -236,12 +248,13 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function insecureUrl($url, ...$parameters)
     {
         $this->link_type = self::LINK_INSECURE_URL;
         $this->link_value = [$url, $parameters];
+        $this->checkActive();
 
         return $this;
     }
@@ -251,13 +264,26 @@ class Item
      *
      * @param string $url
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function externalUrl($url)
     {
         $this->link_type = self::LINK_EXTERNAL_URL;
         $this->link_value = [$url];
         $this->setOptionOpenNewWindow();
+        $this->setActive(false);
+
+        return $this;
+    }
+
+    /**
+     * Check and activate or deactivate.
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
+     */
+    private function checkActive()
+    {
+        $this->setActive($this->generateUrl() == \Request::url());
 
         return $this;
     }
@@ -267,7 +293,7 @@ class Item
      *
      * @param string $value
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function setTitle($value)
     {
@@ -285,7 +311,7 @@ class Item
      *
      * @param string $value
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function setNickanme($value)
     {
@@ -299,7 +325,7 @@ class Item
      *
      * @param string $value
      *
-     * @return void
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function getNickname()
     {
@@ -310,11 +336,18 @@ class Item
      * Set this item active.
      *
      * @param bool $active
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
      */
     public function setActive($active = true)
     {
         $this->data['active'] = $active;
-        $this->addLinkAttribute('class', 'active');
+
+        $method_name = $active ? 'add' : 'remove';
+        $method_name .= $this->getOptionActiveOnLink() ? 'Link' : 'Item';
+        $method_name .= 'Attribute';
+
+        $this->$method_name('class', 'active');
 
         // Activate parents.
         if (!is_null($this->parent)) {
@@ -322,6 +355,38 @@ class Item
         }
 
         return $this;
+    }
+
+    /**
+     * Generate the url for this item.
+     *
+     * @return string
+     */
+    private function generateUrl()
+    {
+        $url = '';
+
+        // Create the URL.
+        switch ($this->link_type) {
+            case self::LINK_ACTION:
+                $url = action(...$this->link_value);
+                break;
+            case self::LINK_ROUTE:
+                $url = route(...$this->link_value);
+                break;
+            case self::LINK_URL:
+                $url = secure_url(...$this->link_value);
+                break;
+            case self::LINK_INSECURE_URL:
+                $url = url(...$this->link_value);
+                break;
+            case self::LINK_EXTERNAL_URL:
+                $url = stripos($this->link_value[0], 'http') === false ? 'http://' : '';
+                $url .= $this->link_value[0];
+                break;
+        }
+
+        return $url;
     }
 
     /**
@@ -339,27 +404,7 @@ class Item
             // Create the link.
             $html = Html::a($html)->addAttributes($this->link_attribute);
             $html->openNew(!$this->getOptionOpenNewWindow());
-
-            // Create the URL.
-            switch ($this->link_type) {
-                case self::LINK_ACTION:
-                    $html->actionHref(...$this->link_value);
-                    break;
-                case self::LINK_ROUTE:
-                    $html->routeHref(...$this->link_value);
-                    break;
-                case self::LINK_URL:
-                    $html->href(secure_url(...$this->link_value));
-                    break;
-                case self::LINK_INSECURE_URL:
-                    $html->href(url(...$this->link_value));
-                    break;
-                case self::LINK_EXTERNAL_URL:
-                    $url = stripos($this->link_value[0], 'http') === false ? 'http://' : '';
-                    $url .= $this->link_value[0];
-                    $html->href($url);
-                    break;
-            }
+            $html->href($this->generateUrl());
         }
 
         // Create the container and allocate the link.
@@ -384,7 +429,7 @@ class Item
      * @param string $method_name
      * @param array  $arguments
      *
-     * @return mixed
+     * @return Bluora\LaravelNavigationBuilder\Item|string
      */
     public function __call($name, $arguments)
     {
@@ -431,7 +476,13 @@ class Item
                     break;
             }
 
-            array_set($this->{$method_name.'_'.$key}, $arguments[0], trim($current_value));
+            $current_value = trim($current_value);
+
+            if (strlen($current_value)) {
+                array_set($this->{$method_name.'_'.$key}, $arguments[0], $current_value);
+            } else {
+                unset($this->{$method_name.'_'.$key}[$arguments[0]]);
+            }
 
             return $this;
         }

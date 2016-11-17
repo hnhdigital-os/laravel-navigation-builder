@@ -26,3 +26,11 @@ function url($url)
 {
     return 'https://localhost/'.$url;
 }
+
+class Request
+{
+    public static function url()
+    {
+        return true;
+    }
+}

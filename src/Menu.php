@@ -166,9 +166,10 @@ class Menu
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
-    public function setAttribute($name, $value)
+    public function setAttribute($name, ...$value)
     {
-        array_set($this->attribute, $name, $value);
+        $value = is_array(array_get($value, 0, '')) ? array_get($value, 0) : $value;
+        $this->updateAttribute($name, $value, $this->getAttributeValueSeparator($name));
 
         return $this;
     }
@@ -181,11 +182,16 @@ class Menu
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
-    public function addAttribute($name, $value)
+    public function addAttribute($name, ...$value)
     {
-        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
+        $value = is_array(array_get($value, 0, '')) ? array_get($value, 0) : $value;
+        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
 
-        array_set($this->attribute, $name, $current_value.$whitespace.$value);
+        foreach ($value as $attribute_value) {
+            $current_value[] = $attribute_value;
+        }
+
+        $this->updateAttribute($name, $current_value, $separator);
 
         return $this;
     }
@@ -200,9 +206,9 @@ class Menu
      */
     public function removeAttribute($name, $value)
     {
-        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
+        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
 
-        array_set($this->attribute, $name, $current_value);
+        $this->updateAttribute($name, $current_value, $separator);
 
         return $this;
     }
@@ -215,11 +221,15 @@ class Menu
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
-    public function appendAttribute($name, $value)
+    public function appendAttribute($name, ...$value)
     {
-        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
+        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
 
-        array_set($this->attribute, $name, $current_value.$whitespace.$value);
+        foreach ($value as $attribute_value) {
+            $current_value[] = $attribute_value;
+        }
+
+        $this->updateAttribute($name, $current_value, $separator);
 
         return $this;
     }
@@ -232,11 +242,15 @@ class Menu
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
-    public function prependAttribute($name, $value)
+    public function prependAttribute($name, ...$value)
     {
-        list($current_value, $whitespace) = $this->manipulateAttribute($name, $value);
+        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
 
-        array_set($this->attribute, $name, $value.$whitespace.$current_value);
+        foreach ($value as $attribute_value) {
+            array_unshift($current_value, $attribute_value);
+        }
+
+        $this->updateAttribute($name, $current_value, $separator);
 
         return $this;
     }
@@ -252,10 +266,133 @@ class Menu
     private function manipulateAttribute($name, $value)
     {
         $current_value = array_get($this->attribute, $name, '');
-        $whitespace = (strlen(trim($current_value)) > 0 && $name === 'class') ? ' ' : '';
-        $current_value = $name == 'class' ? trim(str_replace($value, '', $current_value)) : $current_value;
+        $separator = (strlen(trim($current_value)) > 0) ? $this->getAttributeValueSeparator($name) : '';
+        $current_value = $separator !== '' ? explode($separator, $current_value) : [$current_value];
 
-        return [$current_value, $whitespace];
+        if ($name == 'class' || $name == 'style') {
+            $value = is_array($value) ? $value : [$value];
+            $current_value = array_diff($current_value, $value);
+        }
+
+        return [$current_value, $separator];
+    }
+
+    /**
+     * Update attribute by name.
+     *
+     * @param  string $name
+     * @param  array  $value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    private function updateAttribute($name, $value, $separator)
+    {
+        array_set($this->attribute, $name, implode($separator, $value));
+
+        return $this;
+    }
+
+    /**
+     * Get the attribute value seperator.
+     *
+     * @param  stirng $name
+     *
+     * @return string
+     */
+    private function getAttributeValueSeparator($name)
+    {
+        switch ($name) {
+            case 'class':
+                return ' ';
+            case 'style':
+                return ';';
+        }
+
+        return '';
+    }
+
+    /**
+     * Set a class name to the class attribute.
+     *
+     * Alias for setAttribute.
+     *
+     * @param string ...$value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function setClass(...$value)
+    {
+        return $this->setAttribute('class', $value);
+    }
+
+    /**
+     * Add a class name to the class attribute.
+     *
+     * Alias for addAttribute.
+     *
+     * @param string $value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function addClass(...$value)
+    {
+        return $this->addAttribute('class', $value);
+    }
+
+    /**
+     * Remove a class name from the class attribute.
+     *
+     * Alias for removeAttribute.
+     *
+     * @param string $value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function removeClass(...$value)
+    {
+        return $this->removeAttribute('class', $value);
+    }
+
+    /**
+     * Set a style to the style attribute.
+     *
+     * Alias for setAttribute.
+     *
+     * @param string ...$value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function setStyle(...$value)
+    {
+        return $this->setAttribute('style', $value);
+    }
+
+    /**
+     * Add a style to the style attribute.
+     *
+     * Alias for addAttribute.
+     *
+     * @param string $value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function addStyle(...$value)
+    {
+        return $this->addAttribute('style', $value);
+    }
+
+    /**
+     * Remove a style from the style attribute.
+     *
+     * Alias for removeAttribute.
+     *
+     * @param string $value
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Item
+     */
+    public function removeStyle(...$value)
+    {
+        return $this->removeAttribute('style', $value);
     }
 
     /**

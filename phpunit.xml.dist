@@ -11,7 +11,7 @@
          stopOnFailure="false"
          syntaxCheck="true">
   <testsuites>
-    <testsuite name="Larvel Navigation Builder">
+    <testsuite name="Larvel Navigation Builder Test Suite">
         <directory>./tests/</directory>
     </testsuite>
   </testsuites>
@@ -21,6 +21,8 @@
       <exclude>
         <directory suffix=".php">tests/</directory>
         <directory suffix=".php">vendor/</directory>
+        <file>src/Facade.php</file>
+        <file>src/ServiceProvider.php</file>
       </exclude>
     </whitelist>
   </filter>

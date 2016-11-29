@@ -22,6 +22,3 @@ ratings:
   - "**.php"
 exclude_paths:
 - tests/
-addons:
-    code_climate:
-        repo_token: c40d47ec79fa1ab4cd560b7c28d38036522a5f50fcd375d69e2dcb540af5320b

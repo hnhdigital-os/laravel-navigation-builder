@@ -149,7 +149,7 @@ class Menu
     /**
      * Get attribute by name.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return string
      */
@@ -161,8 +161,8 @@ class Menu
     /**
      * Set attribute by name.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -177,8 +177,8 @@ class Menu
     /**
      * Add attribute by name.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -199,8 +199,8 @@ class Menu
     /**
      * Remove attribute by name.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -216,8 +216,8 @@ class Menu
     /**
      * Append to attribute by name.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -237,8 +237,8 @@ class Menu
     /**
      * Prepend to attribute by name.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -258,8 +258,8 @@ class Menu
     /**
      * Clean attribute value before required change.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return array
      */
@@ -280,8 +280,8 @@ class Menu
     /**
      * Update attribute by name.
      *
-     * @param  string $name
-     * @param  array  $value
+     * @param string $name
+     * @param array  $value
      *
      * @return \Bluora\LaravelNavigationBuilder\Item
      */
@@ -295,7 +295,7 @@ class Menu
     /**
      * Get the attribute value seperator.
      *
-     * @param  stirng $name
+     * @param stirng $name
      *
      * @return string
      */

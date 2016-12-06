@@ -439,8 +439,10 @@ class Item
     {
         if (($this->getOptionHideIfNotActive() && $this->getActive())
             || !$this->getOptionHideIfNotActive()) {
-            // Standard tag, or if option setTag used, use that.
-            $menu_tag = array_get($this->option, 'menu_tag', 'ul');
+
+            // Available options for this item.
+            $container_tag = array_get($this->option, 'container_tag', 'ul');
+            $container_class = array_get($this->option, 'container_class', 'nav');
             $item_tag = array_get($this->option, 'tag', 'li');
             $text_only = array_get($this->option, 'text_only', false);
             $hide_children = array_get($this->option, 'hide_children', false);
@@ -448,33 +450,40 @@ class Item
 
             $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
 
+            // Force the menu items to not show active.
             if ($force_inactive) {
                 $this->setActive(false);
             }
 
+            // Link is not empty.
             if ($this->link_type !== self::LINK_EMPTY) {
                 // Create the link.
                 $html = Html::a()->addAttributes($this->link_attribute)->text($html)
                     ->openNew(!$this->getOptionOpenNewWindow())
-                    ->href($this->generateUrl());
+                    ->href($this->generateUrl())
+                    ->title($this->title);
             } else {
-                $html = $html;
+                $html = Html::span($html)->title($this->title);
             }
 
             // Generate each of the children items.
             if (!$hide_children && $this->hasChildren()) {
                 $child_html = '';
 
+                // Generate each child menu item (repeat this method)
                 foreach ($this->children() as $item) {
                     $item->setOptionItemTag($item_tag);
                     $child_html .= $item->render($menu_level+1);
                 }
 
+                // Name the level
                 $number_as_word = (new NumberConverter())->ordinal($menu_level);
-                $html .= Html::$menu_tag($child_html)
+
+                // Generate the list container
+                $html .= Html::$container_tag($child_html)
                     ->addAttributes($this->item_attribute)
-                    ->addClass('nav')
-                    ->addClass('nav-'.$number_as_word.'-level')
+                    ->addClass($container_class)
+                    ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word))
                     ->s();
             }
 

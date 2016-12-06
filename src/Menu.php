@@ -475,10 +475,10 @@ class Menu
      */
     public function render($parent_id = false)
     {
-        // Standard tag, or if option setTag used, use that.
-        $text_only = array_get($this->option, 'text_only', false);
-        $menu_tag = array_get($this->option, 'tag', 'ul');
+        // Available options for this menu.
+        $container_tag = array_get($this->option, 'tag', 'ul');
         $item_tag = array_get($this->option, 'item_tag', 'li');
+        $text_only = array_get($this->option, 'text_only', false);
         $html = '';
 
         $items = $this->item_collection;
@@ -491,7 +491,7 @@ class Menu
         // Generate each of the items.
         foreach ($items as $item) {
             $item->setOptionItemTag($item_tag)
-                ->setOptionMenuTag($menu_tag);
+                ->setOptionContainerTag($container_tag);
             $html .= $item->render(2, $text_only);
         }
 

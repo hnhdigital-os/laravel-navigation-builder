@@ -15,10 +15,10 @@ class MenuTest extends TestCase
         $menu = new Menu('test');
 
         $menu->add('Home');
-        $this->assertEquals('<li>Home</li>', $menu->render());
+        $this->assertEquals('<li><span title="Home">Home</span></li>', $menu->render());
 
         $profile_item = $menu->add('Profile')->addItemAttribute('class', 'active');
-        $this->assertEquals('<li>Home</li><li class="active">Profile</li>', $menu->render());
+        $this->assertEquals('<li><span title="Home">Home</span></li><li class="active"><span title="Profile">Profile</span></li>', $menu->render());
         $this->assertEquals('active', $profile_item->getItemAttribute('class'));
     }
 
@@ -42,19 +42,19 @@ class MenuTest extends TestCase
 
         $parent_id = $home_item->getId();
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->action('Profile@ProfileController');
-        $this->assertEquals('<li class="active"><a href="Profile@ProfileController">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="Profile@ProfileController" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->url('profile/');
-        $this->assertEquals('<li class="active"><a href="https://localhost/profile/">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->insecureUrl('profile/');
-        $this->assertEquals('<li class="active"><a href="https://localhost/profile/">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->externalUrl('google.com');
-        $this->assertEquals('<li><a target="_blank" href="http://google.com">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li><a target="_blank" href="http://google.com" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->setItemAttribute('class', 'class1');
 

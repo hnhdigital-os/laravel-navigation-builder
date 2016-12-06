@@ -115,4 +115,40 @@ class MenuTest extends TestCase
         $this->assertEquals('<li class="test"><a class="test" target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
 
     }
+
+    /**
+     * Assert that created object creates the correct output.
+     */
+    public function testRendering()
+    {
+        $menu = new Menu('test');
+        $menu->add('Home');
+
+        // Add a child menu item.
+        $home_item = $menu->get('home');
+
+        $this->assertNotEquals($home_item, null);
+
+        $profile_item = $home_item->add('Profile')
+            ->route('profile::edit-profile')
+            ->nickname('profile_edit_profile');
+
+        $profile_item->setOptionForceInactive();
+
+        $this->assertEquals('<li><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
+
+        $profile_item->setOptionHideIfNotActive();
+        $this->assertEquals('', $profile_item->render());
+
+        $profile_item->setOptionForceInactive(false);
+        $profile_item->active(true);
+
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
+
+        $profile_item->add('Change password')
+            ->route('profile::change-password')
+            ->nickname('profile_edit_profile');
+
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a><ul class="active nav nav-second-level"><li class="active"><a href="profile::change-password" title="Change password">Change password</a></li></ul></li>', $profile_item->render(2));
+    }
 }

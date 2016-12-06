@@ -3,6 +3,7 @@
 namespace Bluora\LaravelNavigationBuilder;
 
 use Bluora\LaravelHtmlGenerator\Html;
+use Bluora\PhpNumberConverter\NumberConverter;
 use Illuminate\Support\Str;
 
 class Item
@@ -56,12 +57,27 @@ class Item
      */
     private $link_type = self::LINK_EMPTY;
 
+
+    /**
+     * Unique ID for this item.
+     *
+     * @var string
+     */
+    public $id = '';
+
     /**
      * Object reference to the parent.
      *
      * @var \Bluora\LaravelNavigationBuilder\Item
      */
     public $parent;
+
+    /**
+     * Reference to the parent.
+     *
+     * @var string
+     */
+    public $parent_id = '';
 
     /**
      * Object reference to the menu.
@@ -140,7 +156,7 @@ class Item
      */
     public function hasChildren()
     {
-        return count($this->menu->whereParent($this->id)) or false;
+        return count($this->menu->whereParentId($this->id)->all()) or false;
     }
 
     /**
@@ -152,7 +168,17 @@ class Item
      */
     public function children($depth = false)
     {
-        return $this->menu->whereParent($this->id, $depth);
+        return $this->menu->whereParentId($this->id, $depth)->all();
+    }
+
+    /**
+     * Returns the parent of this item.
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
+     */
+    public function parent()
+    {
+        return $this->parent;
     }
 
     /**
@@ -216,7 +242,7 @@ class Item
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    public function route($name, ...$parameters)
+    public function route($name, $parameters = [])
     {
         $this->link_type = self::LINK_ROUTE;
         $this->link_value = [$name, $parameters];
@@ -281,9 +307,9 @@ class Item
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    private function checkActive()
+    private function checkActive($update_parents = true)
     {
-        $this->setActive($this->generateUrl() == \Request::url());
+        $this->setActive($this->generateUrl() == \Request::url(), $update_parents);
 
         return $this;
     }
@@ -313,7 +339,7 @@ class Item
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    public function setNickanme($value)
+    public function setNickname($value)
     {
         $this->data['nickname'] = strtolower(Str::ascii($value));
 
@@ -329,7 +355,7 @@ class Item
      */
     public function getNickname()
     {
-        return strtolower(Str::ascii($this->data['nickname']));
+        return strtolower(Str::ascii(array_get($this->data, 'nickname', '')));
     }
 
     /**
@@ -339,7 +365,7 @@ class Item
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    public function setActive($active = true)
+    public function setActive($active = true, $update_parents = true)
     {
         $this->data['active'] = $active;
 
@@ -350,9 +376,24 @@ class Item
         $this->$method_name('class', 'active');
 
         // Activate parents.
-        if (!is_null($this->parent)) {
-            $this->parent->active = $active;
+        if ($update_parents && !is_null($this->parent) && $active) {
+            $this->parent()->setActive($active);
         }
+
+        return $this;
+    }
+
+    /**
+     * Check the html content for sprintf template before allocation.
+     *
+     * @param string $template
+     * @param array  $replacements
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
+     */
+    public function setHtml($template, ...$replacements)
+    {
+        $this->data['html'] = count($replacements) ? sprintf($template, ...$replacements) : $template;
 
         return $this;
     }
@@ -375,7 +416,7 @@ class Item
                 $url = route(...$this->link_value);
                 break;
             case self::LINK_URL:
-                $url = secure_url(...$this->link_value);
+                $url = env('APP_NO_SSL', true) ? secure_url(...$this->link_value) : url(...$this->link_value);
                 break;
             case self::LINK_INSECURE_URL:
                 $url = url(...$this->link_value);
@@ -394,21 +435,54 @@ class Item
      *
      * @return string
      */
-    public function render($text_only = false)
+    public function render($menu_level = 0)
     {
-        // Standard tag, or if option setTag used, use that.
-        $item_tag = array_get($this->option, 'tag', 'li');
+        if (($this->getOptionHideIfNotActive() && $this->getActive())
+            || !$this->getOptionHideIfNotActive()) {
+            // Standard tag, or if option setTag used, use that.
+            $menu_tag = array_get($this->option, 'menu_tag', 'ul');
+            $item_tag = array_get($this->option, 'tag', 'li');
+            $text_only = array_get($this->option, 'text_only', false);
+            $hide_children = array_get($this->option, 'hide_children', false);
+            $force_inactive = array_get($this->option, 'force_inactive', false);
 
-        $html = ($text_only) ? $this->html : $this->title;
-        if ($this->link_type !== self::LINK_EMPTY) {
-            // Create the link.
-            $html = Html::a($html)->addAttributes($this->link_attribute);
-            $html->openNew(!$this->getOptionOpenNewWindow());
-            $html->href($this->generateUrl());
+            $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
+
+            if ($force_inactive) {
+                $this->setActive(false);
+            }
+
+            if ($this->link_type !== self::LINK_EMPTY) {
+                // Create the link.
+                $html = Html::a()->addAttributes($this->link_attribute)->text($html)
+                    ->openNew(!$this->getOptionOpenNewWindow())
+                    ->href($this->generateUrl());
+            } else {
+                $html = Html::a()->text($html);
+            }
+
+            // Generate each of the children items.
+            if (!$hide_children && $this->hasChildren()) {
+                $child_html = '';
+
+                foreach ($this->children() as $item) {
+                    $item->setOptionItemTag($item_tag);
+                    $child_html .= $item->render($menu_level+1);
+                }
+
+                $number_as_word = (new NumberConverter())->ordinal($menu_level);
+                $html .= Html::$menu_tag($child_html)
+                    ->addAttributes($this->item_attribute)
+                    ->addClass('nav')
+                    ->addClass('nav-'.$number_as_word.'-level')
+                    ->s();
+            }
+
+            // Create the container and allocate the link.
+            return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
         }
 
-        // Create the container and allocate the link.
-        return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
+        return '';
     }
 
     /**
@@ -440,7 +514,7 @@ class Item
         if ($action == 'get' || $action == 'set') {
             $array_func = 'array_'.$action;
             if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-                $result = $array_func($this->{$method_name.'_'.$key}, $arguments[0], array_get($arguments, 1, null));
+                $result = $array_func($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), array_get($arguments, 1, null));
 
                 return $action == 'get' ? $result : $this;
             }
@@ -459,7 +533,7 @@ class Item
         if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
             && ($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
             $input_value = array_get($arguments, 1, '');
-            $current_value = array_get($this->{$method_name.'_'.$key}, $arguments[0], '');
+            $current_value = array_get($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), '');
             $whitespace = ($arguments[0] == 'class') ? ' ' : '';
 
             if ($arguments[0] == 'class' || $action == 'remove') {
@@ -479,9 +553,9 @@ class Item
             $current_value = trim($current_value);
 
             if (strlen($current_value)) {
-                array_set($this->{$method_name.'_'.$key}, $arguments[0], $current_value);
+                array_set($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), $current_value);
             } else {
-                unset($this->{$method_name.'_'.$key}[$arguments[0]]);
+                unset($this->{$method_name.'_'.$key}[array_get($arguments, 0, null)]);
             }
 
             return $this;
@@ -492,7 +566,34 @@ class Item
             return $this->$name;
         }
 
-        $this->$name = array_get($arguments, 0, '');
+        if (method_exists($this, 'set'.studly_case($action))) {
+            $this->{'set'.studly_case($action)}(...$arguments);
+
+            return $this;
+        }
+
+        if (isset($this->$name)) {
+            $this->$name = array_get($arguments, 0, '');
+
+            return $this;
+        }
+
+        $this->data[$name] = array_get($arguments, 0, '');
+
+        return $this;
+    }
+
+    /**
+     * Set a data value by a name.
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return void
+     */
+    public function data($name, $value)
+    {
+        $this->data[$name] = $value;
 
         return $this;
     }
@@ -512,10 +613,12 @@ class Item
         if (method_exists($this, $set_method)) {
             $this->$set_method($value);
 
-            return;
+            return $this;
         }
 
         $this->data[$name] = $value;
+
+        return $this;
     }
 
     /**

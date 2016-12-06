@@ -14,6 +14,13 @@ class Menu
     private $item_collection;
 
     /**
+     * Original menu.
+     *
+     * @var Illuminate\Support\Collection
+     */
+    private $original_menu;
+
+    /**
      * Menu data.
      *
      * @var array
@@ -39,10 +46,10 @@ class Menu
      *
      * @return void
      */
-    public function __construct($name)
+    public function __construct($name, $collections = false)
     {
         $this->name = $name;
-        $this->item_collection = new Collection();
+        $this->item_collection = ($collections !== false) ? $collections : new Collection();
     }
 
     /**
@@ -70,6 +77,26 @@ class Menu
     public function add($title)
     {
         return $this->addItem($title);
+    }
+
+    /**
+     * Return all menu items.
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
+     */
+    public function allItems()
+    {
+        return $this->item_collection;
+    }
+
+    /**
+     * Alias for allItems
+     *
+     * @return Bluora\LaravelNavigationBuilder\Item
+     */
+    public function all()
+    {
+        return $this->allItems();
     }
 
     /**
@@ -156,6 +183,18 @@ class Menu
     public function getAttribute($name, $default = null)
     {
         return array_get($this->attribute, $name, $default);
+    }
+
+    /**
+     * Get attribute by name.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getAttributes()
+    {
+        return $this->attribute;
     }
 
     /**
@@ -312,6 +351,28 @@ class Menu
     }
 
     /**
+     * Store the original menu.
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Menu
+     */
+    public function setOriginal($original_menu)
+    {
+        $this->original_menu = $original_menu;
+
+        return $this;
+    }
+
+    /**
+     * Reset the menu.
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Menu
+     */
+    public function getOriginal()
+    {
+        return $this->original_menu;
+    }
+
+    /**
      * Set a class name to the class attribute.
      *
      * Alias for setAttribute.
@@ -415,25 +476,27 @@ class Menu
     public function render($parent_id = false)
     {
         // Standard tag, or if option setTag used, use that.
+        $text_only = array_get($this->option, 'text_only', false);
         $menu_tag = array_get($this->option, 'tag', 'ul');
-        $item_tag = array_get($this->option, 'itemTag', 'li');
+        $item_tag = array_get($this->option, 'item_tag', 'li');
         $html = '';
 
         $items = $this->item_collection;
 
         // Render from a specific menu item.
         if ($parent_id !== false) {
-            $items = $this->whereParentId($parent_id);
+            $items = $this->whereParentId($parent_id)->all();
         }
 
         // Generate each of the items.
         foreach ($items as $item) {
-            $item->setOptionItemTag($item_tag);
-            $html .= $item->render();
+            $item->setOptionItemTag($item_tag)
+                ->setOptionMenuTag($menu_tag);
+            $html .= $item->render(2, $text_only);
         }
 
         // Create the container and allocate the link.
-        return Html::$menu_tag($html)->addAttributes($this->attribute)->s();
+        return $html;
     }
 
     /**
@@ -453,7 +516,9 @@ class Menu
             $property_name = snake_case($where_matches[1]);
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
 
-            return $this->filter($property_name, ...$arguments);
+            $menu = new Menu($this->name.'_filtered', $this->filter($property_name, ...$arguments));
+            $menu->setOriginal($this);
+            return $menu;
         }
 
         // $this->getByTitle(...)

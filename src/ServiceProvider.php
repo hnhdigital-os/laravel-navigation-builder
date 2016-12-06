@@ -21,7 +21,7 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->app->singleton('Nav', function () {
-            return new Nav();
+            return new Navigation();
         });
     }
 

@@ -61,6 +61,30 @@ class Navigation
     }
 
     /**
+     * Alias for getMenu
+     *
+     * @param string $key
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Menu
+     */
+    public function get($key)
+    {
+        return $this->getMenu($key);
+    }
+
+    /**
+     * Alias for getMenu
+     *
+     * @param string $key
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Menu
+     */
+    public function menu($key)
+    {
+        return $this->getMenu($key);
+    }
+
+    /**
      * Return all menu instances.
      *
      * @param string $key

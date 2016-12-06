@@ -57,7 +57,6 @@ class Item
      */
     private $link_type = self::LINK_EMPTY;
 
-
     /**
      * Unique ID for this item.
      *
@@ -473,7 +472,7 @@ class Item
                 // Generate each child menu item (repeat this method)
                 foreach ($this->children() as $item) {
                     $item->setOptionItemTag($item_tag);
-                    $child_html .= $item->render($menu_level+1);
+                    $child_html .= $item->render($menu_level + 1);
                 }
 
                 // Name the level

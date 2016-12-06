@@ -46,7 +46,7 @@ Enable the facade by editing config/app.php:
 
 ## Usage
 
-
+See the [wiki](https://github.com/bluora/laravel-navigation-builder/wiki) for all usage documentation.
 
 ## Contributing
 

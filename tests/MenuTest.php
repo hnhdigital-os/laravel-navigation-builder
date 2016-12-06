@@ -73,6 +73,34 @@ class MenuTest extends TestCase
     /**
      * Assert that created object creates the correct output.
      */
+    public function testCreateMenuWithChildren()
+    {
+        $menu = new Menu('test');
+        $menu->add('Home')->url('');
+
+        // Add a child menu item.
+        $home_item = $menu->get('home');
+
+        $profile_item = $home_item->add('Profile')
+            ->route('profile::edit-profile')
+            ->html('Profile')
+            ->nickname('profile_edit_profile');
+
+        $parent_id = $home_item->getId();
+
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
+
+        $render = '';
+        foreach ($home_item->children() as $item) {
+            $render .= $item->render();
+        }
+
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $render);
+    }
+
+    /**
+     * Assert that created object creates the correct output.
+     */
     public function testAttributeSetting()
     {
         $menu = new Menu('test');

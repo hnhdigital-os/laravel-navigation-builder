@@ -12,6 +12,11 @@ function action($name, $parameters)
     return $name;
 }
 
+function env($boolean, $default)
+{
+    return $default;
+}
+
 function route($name, $route_parameters)
 {
     return $name;

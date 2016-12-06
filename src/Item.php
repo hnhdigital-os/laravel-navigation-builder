@@ -458,7 +458,7 @@ class Item
                     ->openNew(!$this->getOptionOpenNewWindow())
                     ->href($this->generateUrl());
             } else {
-                $html = Html::a()->text($html);
+                $html = $html;
             }
 
             // Generate each of the children items.

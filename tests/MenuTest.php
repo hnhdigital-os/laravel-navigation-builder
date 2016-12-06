@@ -10,51 +10,15 @@ class MenuTest extends TestCase
     /**
      * Assert that created object creates the correct output.
      */
-    public function testCreateMenuContainer()
-    {
-        $menu = new Menu('test');
-
-        $this->assertEquals('test', $menu->name);
-        $this->assertEquals('<ul></ul>', $menu->render());
-
-        $menu->addClass('nav');
-
-        $this->assertEquals('<ul class="nav"></ul>', $menu->render());
-        $this->assertEquals('nav', $menu->getAttribute('class'));
-
-        $menu->addClass('foo');
-        $this->assertEquals('<ul class="nav foo"></ul>', $menu->render());
-
-        $menu->removeClass('foo');
-        $this->assertEquals('<ul class="nav"></ul>', $menu->render());
-
-        $menu->setOptionTag('div');
-        $this->assertEquals('<div class="nav"></div>', $menu->render());
-
-        $menu->setOptionTag('ul');
-        $menu->appendAttribute('class', 'foo');
-        $this->assertEquals('<ul class="nav foo"></ul>', $menu->render());
-        $this->assertEquals('ul', $menu->getOptionTag('ul'));
-
-        $menu = $menu->prependAttribute('class', 'foo');
-        $this->assertEquals('<ul class="foo nav"></ul>', $menu->render());
-
-        $menu->name('test1');
-        $this->assertEquals('test1', $menu->name());
-    }
-
-    /**
-     * Assert that created object creates the correct output.
-     */
     public function testCreateTwoMenuItems()
     {
         $menu = new Menu('test');
 
         $menu->add('Home');
-        $this->assertEquals('<ul><li>Home</li></ul>', $menu->render());
+        $this->assertEquals('<li>Home</li>', $menu->render());
 
         $profile_item = $menu->add('Profile')->addItemAttribute('class', 'active');
-        $this->assertEquals('<ul><li>Home</li><li class="active">Profile</li></ul>', $menu->render());
+        $this->assertEquals('<li>Home</li><li class="active">Profile</li>', $menu->render());
         $this->assertEquals('active', $profile_item->getItemAttribute('class'));
     }
 
@@ -78,19 +42,19 @@ class MenuTest extends TestCase
 
         $parent_id = $home_item->getId();
 
-        $this->assertEquals('<ul><li class="active"><a href="profile::edit-profile">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="profile::edit-profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->action('Profile@ProfileController');
-        $this->assertEquals('<ul><li class="active"><a href="Profile@ProfileController">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="Profile@ProfileController">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->url('profile/');
-        $this->assertEquals('<ul><li class="active"><a href="https://localhost/profile/">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="https://localhost/profile/">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->insecureUrl('profile/');
-        $this->assertEquals('<ul><li class="active"><a href="https://localhost/profile/">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active"><a href="https://localhost/profile/">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->externalUrl('google.com');
-        $this->assertEquals('<ul><li><a target="_blank" href="http://google.com">Profile</a></li></ul>', $menu->render($parent_id));
+        $this->assertEquals('<li><a target="_blank" href="http://google.com">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->setItemAttribute('class', 'class1');
 

@@ -61,7 +61,7 @@ class Navigation
     }
 
     /**
-     * Alias for getMenu
+     * Alias for getMenu.
      *
      * @param string $key
      *
@@ -73,7 +73,7 @@ class Navigation
     }
 
     /**
-     * Alias for getMenu
+     * Alias for getMenu.
      *
      * @param string $key
      *

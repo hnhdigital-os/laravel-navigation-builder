@@ -2,8 +2,6 @@
 
 namespace Bluora\LaravelNavigationBuilder;
 
-use Bluora\LaravelHtmlGenerator\Html;
-
 class Menu
 {
     /**
@@ -90,7 +88,7 @@ class Menu
     }
 
     /**
-     * Alias for allItems
+     * Alias for allItems.
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
@@ -516,8 +514,9 @@ class Menu
             $property_name = snake_case($where_matches[1]);
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
 
-            $menu = new Menu($this->name.'_filtered', $this->filter($property_name, ...$arguments));
+            $menu = new self($this->name.'_filtered', $this->filter($property_name, ...$arguments));
             $menu->setOriginal($this);
+
             return $menu;
         }
 

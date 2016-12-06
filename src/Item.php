@@ -193,8 +193,8 @@ class Item
      */
     public function item($name, $value, $action = 'add')
     {
-        $method_name = $action.ucfirst($name).'Attribute';
-        $item->$method_name($value);
+        $method_name = $action.'ItemAttribute';
+        $this->$method_name($name, $value);
 
         return $this;
     }
@@ -211,8 +211,8 @@ class Item
      */
     public function link($name, $value, $action = 'add')
     {
-        $method_name = $action.ucfirst($name).'Attribute';
-        $item->$method_name($value);
+        $method_name = $action.'LinkAttribute';
+        $this->$method_name($name, $value);
 
         return $this;
     }

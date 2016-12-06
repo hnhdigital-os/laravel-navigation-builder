@@ -25,7 +25,7 @@ class MenuTest extends TestCase
     /**
      * Assert that created object creates the correct output.
      */
-    public function testCreateMenuWithChildren()
+    public function testCreateMenuWithDifferentLinks()
     {
         $menu = new Menu('test');
         $menu->add('Home');
@@ -68,5 +68,23 @@ class MenuTest extends TestCase
         $home_item = $menu->getByTitle('Home');
         $this->assertNotEquals($home_item, null);
         $this->assertEquals($parent_id, $home_item->id);
+    }
+
+    /**
+     * Assert that created object creates the correct output.
+     */
+    public function testAttributeSetting()
+    {
+        $menu = new Menu('test');
+        $menu->add('Home')->externalUrl('https://github.com');
+
+        $home_item = $menu->get('home');
+
+        $home_item->item('class', 'test');
+        $this->assertEquals('<li class="test"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+
+        $home_item->link('class', 'test');
+        $this->assertEquals('<li class="test"><a class="test" target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+
     }
 }

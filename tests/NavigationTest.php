@@ -19,6 +19,8 @@ class NavigationTest extends TestCase
         $collection = (new Collection())->push($menu, 'main');
 
         $this->assertEquals($navigation->getMenu('main'), $menu);
+        $this->assertEquals($navigation->get('main'), $menu);
+        $this->assertEquals($navigation->menu('main'), $menu);
         $this->assertEquals($navigation->getMenus()->values(), $collection->values());
     }
 

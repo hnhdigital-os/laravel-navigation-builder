@@ -113,7 +113,6 @@ class MenuTest extends TestCase
 
         $home_item->link('class', 'test');
         $this->assertEquals('<li class="test"><a class="test" target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
-
     }
 
     /**

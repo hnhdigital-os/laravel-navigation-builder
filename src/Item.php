@@ -457,10 +457,16 @@ class Item
             // Link is not empty.
             if ($this->link_type !== self::LINK_EMPTY) {
                 // Create the link.
-                $html = Html::a()->addAttributes($this->link_attribute)->text($html)
+                $html_link = Html::a()->text($html)
                     ->openNew(!$this->getOptionOpenNewWindow())
                     ->href($this->generateUrl())
                     ->title($this->title);
+
+                if (!$text_only) {
+                    $html_link->addAttributes($this->link_attribute);
+                }
+
+                $html = $html_link->s();
             } else {
                 $html = Html::span($html)->title($this->title);
             }
@@ -479,11 +485,12 @@ class Item
                 $number_as_word = (new NumberConverter())->ordinal($menu_level);
 
                 // Generate the list container
-                $html .= Html::$container_tag($child_html)
+                $html_container = Html::$container_tag($child_html)
                     ->addAttributes($this->item_attribute)
                     ->addClass($container_class)
-                    ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word))
-                    ->s();
+                    ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
+
+                $html .= $html_container->s();
             }
 
             // Create the container and allocate the link.

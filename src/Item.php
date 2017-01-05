@@ -469,6 +469,10 @@ class Item
                 $html = $html_link->s();
             } else {
                 $html = Html::span($html)->title($this->title);
+
+                if (!$text_only) {
+                    $html->addAttributes($this->link_attribute);
+                }
             }
 
             // Generate each of the children items.

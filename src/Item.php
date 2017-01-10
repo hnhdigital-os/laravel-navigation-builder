@@ -497,6 +497,10 @@ class Item
                 $html .= $html_container->s();
             }
 
+            if ($this->getActive() && !$this->hasChildren()) {
+                $this->addItemAttribute('class', 'actual-active-link');
+            }
+
             // Create the container and allocate the link.
             return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
         }

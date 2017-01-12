@@ -98,6 +98,20 @@ class Menu
     }
 
     /**
+     * Check menu's are all active.
+     *
+     * @return Menu
+     */
+    public function checkActive()
+    {
+        foreach ($this->item_collection as $item) {
+            $item->checkItemIsActive($item);
+        }
+
+        return $this;
+    }
+
+    /**
      * Filter items by property.
      *
      * @param string $property_name

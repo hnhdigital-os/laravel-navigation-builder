@@ -358,6 +358,16 @@ class Item
     }
 
     /**
+     * Get the menu for this item.
+     *
+     * @return Menu
+     */
+    public function getMenu()
+    {
+        return $this->menu;
+    }
+
+    /**
      * Set this item active.
      *
      * @param bool $active
@@ -430,12 +440,44 @@ class Item
     }
 
     /**
+     * Check if listed items are active.
+     *
+     * @param  Item $item
+     *
+     * @return boolean
+     */
+    public static function checkItemIsActive($item)
+    {
+        if (empty($item_list = $item->getOptionShowIfItemIsActive())) {
+            return false;
+        }
+
+        if (!is_array($item_list)) {
+            $item_list = [$item_list];
+        }
+
+
+        foreach ($item_list as $nickname) {
+            $check_item = $item->getMenu()->get($nickname);
+
+            if ($check_item->getActive()) {
+                $item->setActive();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Render this item.
      *
      * @return string
      */
     public function render($menu_level = 0)
     {
+        static::checkItemIsActive($this);
+
         if (($this->getOptionHideIfNotActive() && $this->getActive())
             || !$this->getOptionHideIfNotActive()) {
 
@@ -497,7 +539,8 @@ class Item
                 $html .= $html_container->s();
             }
 
-            if ($this->getActive() && !$this->hasChildren()) {
+            if ($this->getActive() && !$this->hasChildren()
+                && $this->generateUrl() == \Request::url()) {
                 $this->addItemAttribute('class', 'actual-active-link');
             }
 
@@ -561,6 +604,7 @@ class Item
 
             if ($arguments[0] == 'class' || $action == 'remove') {
                 $current_value = str_replace($input_value, '', $current_value);
+                $current_value = str_replace('actual--link', 'actual-active-link', $current_value);
             }
 
             switch ($action) {

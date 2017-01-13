@@ -42,19 +42,19 @@ class MenuTest extends TestCase
 
         $parent_id = $home_item->getId();
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->action('Profile@ProfileController');
-        $this->assertEquals('<li class="active"><a href="Profile@ProfileController" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active actual-link"><a href="Profile@ProfileController" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->url('profile/');
-        $this->assertEquals('<li class="active"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active actual-link"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->insecureUrl('profile/');
-        $this->assertEquals('<li class="active"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active actual-link"><a href="https://localhost/profile/" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->externalUrl('google.com');
-        $this->assertEquals('<li><a target="_blank" href="http://google.com" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="actual-link"><a target="_blank" href="http://google.com" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $profile_item->setItemAttribute('class', 'class1');
 
@@ -88,14 +88,14 @@ class MenuTest extends TestCase
 
         $parent_id = $home_item->getId();
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $menu->render($parent_id));
 
         $render = '';
         foreach ($home_item->children() as $item) {
             $render .= $item->render();
         }
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $render);
+        $this->assertEquals('<li class="active  actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $render);
     }
 
     /**
@@ -109,10 +109,10 @@ class MenuTest extends TestCase
         $home_item = $menu->get('home');
 
         $home_item->item('class', 'test');
-        $this->assertEquals('<li class="test"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="test actual-link"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
 
         $home_item->link('class', 'test');
-        $this->assertEquals('<li class="test"><a class="test" target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="test  actual-link"><a target="_blank" href="https://github.com" title="Home" class="test">Home</a></li>', $home_item->render());
     }
 
     /**
@@ -134,7 +134,7 @@ class MenuTest extends TestCase
 
         $profile_item->setOptionForceInactive();
 
-        $this->assertEquals('<li><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
+        $this->assertEquals('<li class="actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
 
         $profile_item->setOptionHideIfNotActive();
         $this->assertEquals('', $profile_item->render());
@@ -142,12 +142,12 @@ class MenuTest extends TestCase
         $profile_item->setOptionForceInactive(false);
         $profile_item->active(true);
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
 
         $profile_item->add('Change password')
             ->route('profile::change-password')
             ->nickname('profile_edit_profile');
 
-        $this->assertEquals('<li class="active"><a href="profile::edit-profile" title="Profile">Profile</a><ul class="active nav nav-second-level"><li class="active"><a href="profile::change-password" title="Change password">Change password</a></li></ul></li>', $profile_item->render(2));
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a><ul class="actual-link active nav nav-second-level"><li class="active actual-link"><a href="profile::change-password" title="Change password">Change password</a></li></ul></li>', $profile_item->render(2));
     }
 }

@@ -539,9 +539,8 @@ class Item
                 $html .= $html_container->s();
             }
 
-            if ($this->getActive() && !$this->hasChildren()
-                && $this->generateUrl() == \Request::url()) {
-                $this->addItemAttribute('class', 'actual-active-link');
+            if ($this->generateUrl() == \Request::url()) {
+                $this->addItemAttribute('class', 'actual-link');
             }
 
             // Create the container and allocate the link.
@@ -604,7 +603,6 @@ class Item
 
             if ($arguments[0] == 'class' || $action == 'remove') {
                 $current_value = str_replace($input_value, '', $current_value);
-                $current_value = str_replace('actual--link', 'actual-active-link', $current_value);
             }
 
             switch ($action) {

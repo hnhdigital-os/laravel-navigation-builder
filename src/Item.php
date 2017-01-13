@@ -628,7 +628,6 @@ class Item
 
             // Other attributes
             elseif ($arguments[0] != 'class') {
-
                 if ($action == 'remove') {
                     $current_value = str_replace($input_value, '', $current_value);
                 }

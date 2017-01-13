@@ -539,7 +539,8 @@ class Item
                 $html .= $html_container->s();
             }
 
-            if ($this->generateUrl() == \Request::url()) {
+            if ($this->generateUrl() == \Request::url()
+                && !$this->hasChildren()) {
                 $this->addItemAttribute('class', 'actual-link');
             }
 

@@ -62,7 +62,7 @@ class MenuTest extends TestCase
         $this->assertEquals('class1 class2', $profile_item->getItemAttribute('class'));
 
         $profile_item->prependItemAttribute('class', 'class3');
-        $this->assertEquals('class3 class1 class2', $profile_item->getItemAttribute('class'));
+        $this->assertEquals('class1 class2 class3', $profile_item->getItemAttribute('class'));
 
         // Find home item.
         $home_item = $menu->getByTitle('Home');
@@ -95,7 +95,7 @@ class MenuTest extends TestCase
             $render .= $item->render();
         }
 
-        $this->assertEquals('<li class="active  actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $render);
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $render);
     }
 
     /**
@@ -109,10 +109,10 @@ class MenuTest extends TestCase
         $home_item = $menu->get('home');
 
         $home_item->item('class', 'test');
-        $this->assertEquals('<li class="test actual-link"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="actual-link test"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
 
         $home_item->link('class', 'test');
-        $this->assertEquals('<li class="test  actual-link"><a target="_blank" href="https://github.com" title="Home" class="test">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="actual-link test"><a target="_blank" href="https://github.com" title="Home" class="test">Home</a></li>', $home_item->render());
     }
 
     /**
@@ -148,6 +148,6 @@ class MenuTest extends TestCase
             ->route('profile::change-password')
             ->nickname('profile_edit_profile');
 
-        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a><ul class="actual-link active nav nav-second-level"><li class="active actual-link"><a href="profile::change-password" title="Change password">Change password</a></li></ul></li>', $profile_item->render(2));
+        $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a><ul class="active actual-link nav nav-second-level"><li class="active actual-link"><a href="profile::change-password" title="Change password">Change password</a></li></ul></li>', $profile_item->render(2));
     }
 }

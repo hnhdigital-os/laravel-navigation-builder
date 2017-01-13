@@ -600,23 +600,51 @@ class Item
             && ($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
             $input_value = array_get($arguments, 1, '');
             $current_value = array_get($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), '');
-            $whitespace = ($arguments[0] == 'class') ? ' ' : '';
 
-            if ($arguments[0] == 'class' || $action == 'remove') {
-                $current_value = str_replace($input_value, '', $current_value);
+            // Class attributes
+            if ($arguments[0] == 'class') {
+                // Convert string to array, trim input and remove possible duplicates.
+                $current_value_array = explode(' ', $current_value);
+                $input_value = trim($input_value);
+                $current_value_array = array_unique($current_value_array);
+
+                // Remove class from list
+                if ($action == 'remove') {
+                    if (($index = array_search($input_value, $current_value_array)) !== false) {
+                        unset($current_value_array[$index]);
+                    }
+                }
+
+                // Add class to list
+                elseif ($action != 'remove') {
+                    $current_value_array[] = $input_value;
+                }
+
+                // Remove duplicates, sort and assign string value.
+                $current_value_array = array_unique($current_value_array);
+                sort($current_value_array);
+                $current_value = trim(implode(' ', $current_value_array));
             }
 
-            switch ($action) {
-                case 'add':
-                case 'append':
-                    $current_value .= $whitespace.$input_value;
-                    break;
-                case 'prepend':
-                    $current_value = $input_value.$whitespace.$current_value;
-                    break;
-            }
+            // Other attributes
+            elseif ($arguments[0] != 'class') {
 
-            $current_value = trim($current_value);
+                if ($action == 'remove') {
+                    $current_value = str_replace($input_value, '', $current_value);
+                }
+
+                switch ($action) {
+                    case 'add':
+                    case 'append':
+                        $current_value .= $input_value;
+                        break;
+                    case 'prepend':
+                        $current_value = $input_value.$current_value;
+                        break;
+                }
+
+                $current_value = trim($current_value);
+            }
 
             if (strlen($current_value)) {
                 array_set($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), $current_value);

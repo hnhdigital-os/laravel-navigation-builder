@@ -442,9 +442,9 @@ class Item
     /**
      * Check if listed items are active.
      *
-     * @param  Item $item
+     * @param Item $item
      *
-     * @return boolean
+     * @return bool
      */
     public static function checkItemIsActive($item)
     {
@@ -456,12 +456,12 @@ class Item
             $item_list = [$item_list];
         }
 
-
         foreach ($item_list as $nickname) {
             $check_item = $item->getMenu()->get($nickname);
 
             if ($check_item->getActive()) {
                 $item->setActive();
+
                 return true;
             }
         }

@@ -480,7 +480,6 @@ class Item
 
         if (($this->getOptionHideIfNotActive() && $this->getActive())
             || !$this->getOptionHideIfNotActive()) {
-
             // Available options for this item.
             $container_tag = array_get($this->option, 'container_tag', 'ul');
             $container_class = array_get($this->option, 'container_class', 'nav');
@@ -615,10 +614,8 @@ class Item
                     if (($index = array_search($input_value, $current_value_array)) !== false) {
                         unset($current_value_array[$index]);
                     }
-                }
-
                 // Add class to list
-                elseif ($action != 'remove') {
+                } elseif ($action != 'remove') {
                     $current_value_array[] = $input_value;
                 }
 
@@ -626,10 +623,9 @@ class Item
                 $current_value_array = array_unique($current_value_array);
                 sort($current_value_array);
                 $current_value = trim(implode(' ', $current_value_array));
-            }
 
             // Other attributes
-            elseif ($arguments[0] != 'class') {
+            } elseif ($arguments[0] != 'class') {
                 if ($action == 'remove') {
                     $current_value = str_replace($input_value, '', $current_value);
                 }

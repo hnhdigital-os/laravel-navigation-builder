@@ -13,7 +13,7 @@
         "bluora/laravel-number-converter": "dev-master"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.*",        
+        "phpunit/phpunit": "5.7",        
         "codeclimate/php-test-reporter": "dev-master",
         "phpmd/phpmd" : "@stable",
         "illuminate/support": "^5.3"
@@ -25,6 +25,12 @@
         "psr-4": {
             "Bluora\\LaravelNavigationBuilder\\": "src/"
         }
+    },
+    "scripts": {
+      "test": "composer phpunit && composer phpcs",
+      "phpcs": "phpcs -p -s --standard=PSR2 ./src ./tests",
+      "phpunit": "phpunit",
+      "hhvm": "hhvm ./vendor/phpunit/phpunit/phpunit"
     },
     "prefer-stable": true,
     "minimum-stability" : "dev"

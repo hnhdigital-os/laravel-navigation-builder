@@ -527,16 +527,18 @@ class Item
                     $child_html .= $item->render($menu_level + 1);
                 }
 
-                // Name the level
-                $number_as_word = (new NumberConverter())->ordinal($menu_level);
+                if ($child_html !== '') {
+                    // Name the level
+                    $number_as_word = (new NumberConverter())->ordinal($menu_level);
 
-                // Generate the list container
-                $html_container = Html::$container_tag($child_html)
-                    ->addAttributes($this->item_attribute)
-                    ->addClass($container_class)
-                    ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
+                    // Generate the list container
+                    $html_container = Html::$container_tag($child_html)
+                        ->addAttributes($this->item_attribute)
+                        ->addClass($container_class)
+                        ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
 
-                $html .= $html_container->s();
+                    $html .= $html_container->s();
+                }
             }
 
             if ($this->generateUrl() == \Request::url()

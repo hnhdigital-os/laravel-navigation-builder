@@ -440,15 +440,15 @@ class Item
     }
 
     /**
-     * Check if listed items are active.
+     * Activate if listed is item is active.
      *
      * @param Item $item
      *
      * @return bool
      */
-    public static function checkItemIsActive($item)
+    public static function activateIfItemIsActive($item)
     {
-        if (empty($item_list = $item->getOptionShowIfItemIsActive())) {
+        if (empty($item_list = $item->getOptionActiveIfItemIsActive())) {
             return false;
         }
 
@@ -459,9 +459,41 @@ class Item
         foreach ($item_list as $nickname) {
             $check_item = $item->getMenu()->get($nickname);
 
-            if ($check_item->getActive()) {
+            if (!is_null($check_item) && $check_item->getActive()) {
                 $item->setActive();
 
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if listed items are active.
+     *
+     * @param Item $item
+     *
+     * @return bool
+     */
+    public function checkItemIsActive($item)
+    {
+        if ($this->getActive()) {
+            return true;
+        }
+
+        if (empty($item_list = $item->getOptionHideIfItemNotActive())) {
+            return true;
+        }
+
+        if (!is_array($item_list)) {
+            $item_list = [$item_list];
+        }
+
+        foreach ($item_list as $nickname) {
+            $check_item = $item->getMenu()->get($nickname);
+
+            if (!is_null($check_item) && $check_item->getActive()) {
                 return true;
             }
         }
@@ -476,10 +508,13 @@ class Item
      */
     public function render($menu_level = 0)
     {
-        static::checkItemIsActive($this);
+        static::activateIfItemIsActive($this);
 
-        if (($this->getOptionHideIfNotActive() && $this->getActive())
-            || !$this->getOptionHideIfNotActive()) {
+
+        if ($this->checkItemIsActive($this)
+            && (($this->getOptionHideIfNotActive() && $this->getActive())
+            || !$this->getOptionHideIfNotActive())) {
+
             // Available options for this item.
             $container_tag = array_get($this->option, 'container_tag', 'ul');
             $container_class = array_get($this->option, 'container_class', 'nav');

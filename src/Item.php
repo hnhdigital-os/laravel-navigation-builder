@@ -425,7 +425,7 @@ class Item
                 $url = route(...$this->link_value);
                 break;
             case self::LINK_URL:
-                $url = env('APP_NO_SSL', true) ? secure_url(...$this->link_value) : url(...$this->link_value);
+                $url = env('APP_NO_SSL', true) ? url(...$this->link_value) : secure_url(...$this->link_value);
                 break;
             case self::LINK_INSECURE_URL:
                 $url = url(...$this->link_value);

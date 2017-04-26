@@ -622,8 +622,13 @@ class Item
             }
 
             if ($method_name == 'option') {
-                $default = $action == 'get' ? false : true;
-                $result = $array_func($this->option, $key, array_get($arguments, 0, $default));
+                if (count($arguments) > 1) {
+                    $data = $arguments;
+                } else {
+                    $default = $action == 'get' ? false : true;
+                    $data = array_get($arguments, 0, $default);
+                }
+                $result = $array_func($this->option, $key, $data);
 
                 return $action == 'get' ? $result : $this;
             }

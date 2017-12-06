@@ -555,9 +555,17 @@ class Item
             if (!$hide_children && $this->hasChildren()) {
                 $child_html = '';
 
+                $item_callback = array_get($this->option, 'item_callback', null);
+
                 // Generate each child menu item (repeat this method)
                 foreach ($this->children() as $item) {
                     $item->setOptionItemTag($item_tag);
+
+                     if (!is_null($item_callback) && is_callable($item_callback)) {
+                        $item_callback($item);
+                        $item->setOptionItemCallback($item_callback);
+                    }
+
                     $child_html .= $item->render($menu_level + 1);
                 }
 

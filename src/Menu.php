@@ -490,6 +490,7 @@ class Menu
         // Available options for this menu.
         $container_tag = array_get($this->option, 'tag', 'ul');
         $item_tag = array_get($this->option, 'item_tag', 'li');
+        $item_callback = array_get($this->option, 'item_callback', null);
         $text_only = array_get($this->option, 'text_only', false);
         $html = '';
 
@@ -504,6 +505,11 @@ class Menu
         foreach ($items as $item) {
             $item->setOptionItemTag($item_tag)
                 ->setOptionContainerTag($container_tag);
+
+            if (!is_null($item_callback) && is_callable($item_callback)) {
+                $item_callback($item);
+                $item->setOptionItemCallback($item_callback);
+            }
             $html .= $item->render(2, $text_only);
         }
 

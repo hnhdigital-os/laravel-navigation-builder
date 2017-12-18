@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "hnhdigital-os/laravel-html-generator": "dev-master",
+        "hnhdigital-os/laravel-html-generator": "~1.0",
         "hnhdigital-os/laravel-number-converter": "dev-master"
     },
     "require-dev": {

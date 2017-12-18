@@ -543,7 +543,7 @@ class Item
                 }
 
                 $html = $html_link->s();
-            } else {
+            } elseif (!empty($this->title)) {
                 $html = Html::span($html)->title($this->title);
 
                 if (!$text_only) {

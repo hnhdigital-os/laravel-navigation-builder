@@ -72,7 +72,7 @@ class Menu
      *
      * @return Bluora\LaravelNavigationBuilder\Item
      */
-    public function add($title)
+    public function add($title = '')
     {
         return $this->addItem($title);
     }

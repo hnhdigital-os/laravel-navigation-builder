@@ -503,12 +503,12 @@ class Menu
 
         // Generate each of the items.
         foreach ($items as $item) {
-            $item->setOptionItemTag($item_tag)
-                ->setOptionContainerTag($container_tag);
+            $item->setItemTagOption($item_tag)
+                ->setContainerTagOption($container_tag);
 
             if (!is_null($item_callback) && is_callable($item_callback)) {
                 $item_callback($item);
-                $item->setOptionItemCallback($item_callback);
+                $item->setItemCallbackOption($item_callback);
             }
             $html .= $item->render(2, $text_only);
         }
@@ -528,10 +528,10 @@ class Menu
     public function __call($name, $arguments)
     {
         // $this->whereTitle(...)
-        preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $name, $where_matches);
+        preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $name, $matches);
 
-        if (count($where_matches) > 0) {
-            $property_name = snake_case($where_matches[1]);
+        if (count($matches) > 0) {
+            $property_name = snake_case($matches[1]);
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
 
             $menu = new self($this->name.'_filtered', $this->filter($property_name, ...$arguments));
@@ -541,26 +541,30 @@ class Menu
         }
 
         // $this->getByTitle(...)
-        preg_match('/^[G|g]et[B|b]y([a-zA-Z0-9_]+)$/', $name, $get_by_matches);
+        preg_match('/^[G|g]et[B|b]y([a-zA-Z0-9_]+)$/', $name, $matches);
 
-        if (count($get_by_matches) > 0) {
-            $property_name = snake_case($get_by_matches[1]);
+        if (count($matches) > 0) {
+            $property_name = snake_case($matches[1]);
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
             $result = $this->filter($property_name, ...$arguments);
 
             return (count($result)) ? $result->first() : null;
         }
 
-        $method_name = snake_case($name);
-        list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
+        $original_method_name = snake_case($name);
+        preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
-        // $this->getOption[...](), $this->setOption[...]()
-        if ($action == 'get' || $action == 'set') {
-            $array_func = 'array_'.$action;
-            if ($method_name == 'option') {
-                $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+        if (count($matches) === 4) {
+            list($original_method_name, $action, $key, $method_name) = $matches;
 
-                return $action == 'get' ? $result : $this;
+            // $this->get[...]Option(), $this->set[...]Option()
+            if ($action == 'get' || $action == 'set') {
+                $array_func = 'array_'.$action;
+                if ($method_name == 'option') {
+                    $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+
+                    return $action == 'get' ? $result : $this;
+                }
             }
         }
 

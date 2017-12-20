@@ -132,14 +132,14 @@ class MenuTest extends TestCase
             ->route('profile::edit-profile')
             ->nickname('profile_edit_profile');
 
-        $profile_item->setOptionForceInactive();
+        $profile_item->setForceInactiveOption();
 
         $this->assertEquals('<li class="actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());
 
-        $profile_item->setOptionHideIfNotActive();
+        $profile_item->setHideIfNotActiveOption();
         $this->assertEquals('', $profile_item->render());
 
-        $profile_item->setOptionForceInactive(false);
+        $profile_item->setForceInactiveOption(false);
         $profile_item->active(true);
 
         $this->assertEquals('<li class="active actual-link"><a href="profile::edit-profile" title="Profile">Profile</a></li>', $profile_item->render());

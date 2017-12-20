@@ -99,21 +99,32 @@ class Item
     /**
      * Item options.
      *
-     * - open_new_window (setOptionOpenNewWindow)
-     * - hide_if_not_active (setOptionHideIfNotActive)
-     * - show_in_breadcrumb_if_active (setOptionShowInBreadcrumbIfActive)
+     * - open_new_window (setOpenNewWindowOption)
+     * - hide_if_not_active (setHideIfNotActiveOption)
+     * - show_in_breadcrumb_if_active (setShowInBreadcrumbIfActiveOption)
      *
      * @var array
      */
     private $option = [];
 
     /**
+     * Child container attributes.
+     *
+     * @var array
+     */
+    private $container_attribute = [];
+
+    /**
      * Item attributes.
+     *
+     * @var array
      */
     private $item_attribute = [];
 
     /**
      * Link attributes.
+     *
+     * @var array
      */
     private $link_attribute = [];
 
@@ -295,7 +306,7 @@ class Item
     {
         $this->link_type = self::LINK_EXTERNAL_URL;
         $this->link_value = [$url];
-        $this->setOptionOpenNewWindow();
+        $this->setOpenNewWindowOption();
         $this->setActive(false);
 
         return $this;
@@ -379,7 +390,7 @@ class Item
         $this->data['active'] = $active;
 
         $method_name = $active ? 'add' : 'remove';
-        $method_name .= $this->getOptionActiveOnLink() ? 'Link' : 'Item';
+        $method_name .= $this->getActiveOnLinkOption() ? 'Link' : 'Item';
         $method_name .= 'Attribute';
 
         $this->$method_name('class', 'active');
@@ -448,7 +459,7 @@ class Item
      */
     public static function activateIfItemIsActive($item)
     {
-        if (empty($item_list = $item->getOptionActiveIfItemIsActive())) {
+        if (empty($item_list = $item->getActiveIfItemIsActiveOption())) {
             return false;
         }
 
@@ -477,12 +488,12 @@ class Item
      * @return bool
      */
     public function checkItemIsActive($item)
-    {
+    {        
         if ($this->getActive()) {
             return true;
         }
 
-        if (empty($item_list = $item->getOptionHideIfItemNotActive())) {
+        if (empty($item_list = $item->getHideIfItemNotActiveOption())) {
             return true;
         }
 
@@ -510,10 +521,9 @@ class Item
     {
         static::activateIfItemIsActive($this);
 
-
         if ($this->checkItemIsActive($this)
-            && (($this->getOptionHideIfNotActive() && $this->getActive())
-            || !$this->getOptionHideIfNotActive())) {
+            && (($this->getHideIfNotActiveOption() && $this->getActive())
+            || !$this->getHideIfNotActiveOption())) {
 
             // Available options for this item.
             $container_tag = array_get($this->option, 'container_tag', 'ul');
@@ -534,7 +544,7 @@ class Item
             if ($this->link_type !== self::LINK_EMPTY) {
                 // Create the link.
                 $html_link = Html::a()->text($html)
-                    ->openNew(!$this->getOptionOpenNewWindow())
+                    ->openNew(!$this->getOpenNewWindowOption())
                     ->href($this->generateUrl())
                     ->title($this->title);
 
@@ -559,11 +569,11 @@ class Item
 
                 // Generate each child menu item (repeat this method)
                 foreach ($this->children() as $item) {
-                    $item->setOptionItemTag($item_tag);
+                    $item->setItemTagOption($item_tag);
 
                      if (!is_null($item_callback) && is_callable($item_callback)) {
                         $item_callback($item);
-                        $item->setOptionItemCallback($item_callback);
+                        $item->setItemCallbackOption($item_callback);
                     }
 
                     $child_html .= $item->render($menu_level + 1);
@@ -575,7 +585,7 @@ class Item
 
                     // Generate the list container
                     $html_container = Html::$container_tag($child_html)
-                        ->addAttributes($this->item_attribute)
+                        ->addAttributes($this->container_attribute)
                         ->addClass($container_class)
                         ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
 
@@ -617,88 +627,104 @@ class Item
      */
     public function __call($name, $arguments)
     {
-        $method_name = snake_case($name);
-        list($action, $method_name, $key) = array_pad(explode('_', $method_name, 3), 3, '');
+        $original_method_name = snake_case($name);
+        preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
-        // Get calls.
-        if ($action == 'get' || $action == 'set') {
-            $array_func = 'array_'.$action;
-            if (($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-                $result = $array_func($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), array_get($arguments, 1, null));
+        if (count($matches) === 4) {
+            list($original_method_name, $action, $key, $method_name) = $matches;
 
-                return $action == 'get' ? $result : $this;
-            }
+            $allowed_actions = ['get', 'set', 'add', 'remove', 'append', 'prepend'];
+            $allowed_keys = ['item', 'link', 'container', 'link'];
+            $allowed_method_names = ['attribute', 'option'];
+   
+            if (in_array($action, $allowed_actions)
+                && in_array($method_name, $allowed_method_names)) {
 
-            if ($method_name == 'option') {
-                if (count($arguments) > 1) {
-                    $data = $arguments;
-                } else {
-                    $default = $action == 'get' ? false : true;
-                    $data = array_get($arguments, 0, $default);
-                }
-                $result = $array_func($this->option, $key, $data);
+                // Get calls.
+                if ($action == 'get' || $action == 'set') {
+                    $array_func = 'array_'.$action;
+                    if (($key == 'item' || $key == 'link') && $method_name == 'attribute') {
+                        $result = $array_func($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), array_get($arguments, 1, null));
 
-                return $action == 'get' ? $result : $this;
-            }
-
-            $name = $method_name;
-        }
-
-        // Manipulate values.
-        if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
-            && ($method_name == 'item' || $method_name == 'link') && $key == 'attribute') {
-            $input_value = array_get($arguments, 1, '');
-            $current_value = array_get($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), '');
-
-            // Class attributes
-            if ($arguments[0] == 'class') {
-                // Convert string to array, trim input and remove possible duplicates.
-                $current_value_array = explode(' ', $current_value);
-                $input_value = trim($input_value);
-                $current_value_array = array_unique($current_value_array);
-
-                // Remove class from list
-                if ($action == 'remove') {
-                    if (($index = array_search($input_value, $current_value_array)) !== false) {
-                        unset($current_value_array[$index]);
+                        return $action == 'get' ? $result : $this;
                     }
-                // Add class to list
-                } elseif ($action != 'remove') {
-                    $current_value_array[] = $input_value;
+
+                    if ($method_name == 'option') {
+                        if (count($arguments) > 1) {
+                            $data = $arguments;
+                        } else {
+                            $default = $action == 'get' ? false : true;
+                            $data = array_get($arguments, 0, $default);
+                        }
+                        $result = $array_func($this->option, $key, $data);
+
+                        return $action == 'get' ? $result : $this;
+                    }
+
+                    $name = $method_name;
                 }
 
-                // Remove duplicates, sort and assign string value.
-                $current_value_array = array_unique($current_value_array);
-                sort($current_value_array);
-                $current_value = trim(implode(' ', $current_value_array));
+                // Manipulate values.
+                if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
+                    && ($key == 'item' || $key == 'container' || $key == 'link') && $method_name == 'attribute') {
+                    $input_value = array_get($arguments, 1, '');
+                    $current_value = array_get($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), '');
 
-            // Other attributes
-            } elseif ($arguments[0] != 'class') {
-                if ($action == 'remove') {
-                    $current_value = str_replace($input_value, '', $current_value);
+                    // Class attributes
+                    if ($arguments[0] == 'class') {
+                        // Convert string to array, trim input and remove possible duplicates.
+                        $current_value_array = explode(' ', $current_value);
+                        $input_value = trim($input_value);
+                        $current_value_array = array_unique($current_value_array);
+
+                        // Remove class from list
+                        if ($action == 'remove') {
+                            if (($index = array_search($input_value, $current_value_array)) !== false) {
+                                unset($current_value_array[$index]);
+                            }
+                        // Add class to list
+                        } elseif ($action != 'remove') {
+                            $current_value_array[] = $input_value;
+                        }
+
+                        // Remove duplicates, sort and assign string value.
+                        $current_value_array = array_unique($current_value_array);
+                        sort($current_value_array);
+                        $current_value = trim(implode(' ', $current_value_array));
+
+                    // Other attributes
+                    } elseif ($arguments[0] != 'class') {
+                        if ($action == 'remove') {
+                            $current_value = str_replace($input_value, '', $current_value);
+                        }
+
+                        switch ($action) {
+                            case 'add':
+                            case 'append':
+                                $current_value .= $input_value;
+                                break;
+                            case 'prepend':
+                                $current_value = $input_value.$current_value;
+                                break;
+                        }
+
+                        $current_value = trim($current_value);
+                    }
+
+                    if (strlen($current_value)) {
+                        array_set($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), $current_value);
+                    } else {
+                        unset($this->{$key.'_'.$method_name}[array_get($arguments, 0, null)]);
+                    }
+
+                    return $this;
                 }
-
-                switch ($action) {
-                    case 'add':
-                    case 'append':
-                        $current_value .= $input_value;
-                        break;
-                    case 'prepend':
-                        $current_value = $input_value.$current_value;
-                        break;
-                }
-
-                $current_value = trim($current_value);
             }
-
-            if (strlen($current_value)) {
-                array_set($this->{$method_name.'_'.$key}, array_get($arguments, 0, null), $current_value);
-            } else {
-                unset($this->{$method_name.'_'.$key}[array_get($arguments, 0, null)]);
-            }
-
-            return $this;
+        } else {
+            list($action, $method_name, $key) = array_pad(explode('_', $original_method_name, 3), 3, '');
         }
+
+        $name = $method_name;
 
         // Use the magic get/set instead
         if (count($arguments) == 0) {

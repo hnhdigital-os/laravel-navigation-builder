@@ -488,7 +488,7 @@ class Item
      * @return bool
      */
     public function checkItemIsActive($item)
-    {        
+    {
         if ($this->getActive()) {
             return true;
         }
@@ -571,7 +571,7 @@ class Item
                 foreach ($this->children() as $item) {
                     $item->setItemTagOption($item_tag);
 
-                     if (!is_null($item_callback) && is_callable($item_callback)) {
+                    if (!is_null($item_callback) && is_callable($item_callback)) {
                         $item_callback($item);
                         $item->setItemCallbackOption($item_callback);
                     }
@@ -636,7 +636,7 @@ class Item
             $allowed_actions = ['get', 'set', 'add', 'remove', 'append', 'prepend'];
             $allowed_keys = ['item', 'link', 'container', 'link'];
             $allowed_method_names = ['attribute', 'option'];
-   
+
             if (in_array($action, $allowed_actions)
                 && in_array($method_name, $allowed_method_names)) {
 
@@ -682,7 +682,7 @@ class Item
                             if (($index = array_search($input_value, $current_value_array)) !== false) {
                                 unset($current_value_array[$index]);
                             }
-                        // Add class to list
+                            // Add class to list
                         } elseif ($action != 'remove') {
                             $current_value_array[] = $input_value;
                         }
@@ -692,7 +692,7 @@ class Item
                         sort($current_value_array);
                         $current_value = trim(implode(' ', $current_value_array));
 
-                    // Other attributes
+                        // Other attributes
                     } elseif ($arguments[0] != 'class') {
                         if ($action == 'remove') {
                             $current_value = str_replace($input_value, '', $current_value);

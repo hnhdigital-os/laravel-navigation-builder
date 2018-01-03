@@ -97,6 +97,11 @@ class Menu
         return $this->allItems();
     }
 
+    public function count()
+    {
+        return $this->allItems()->count();
+    }
+
     /**
      * Check menu's are all active.
      *

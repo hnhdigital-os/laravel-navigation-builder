@@ -1,10 +1,10 @@
 ```
-   __                           _     __             ___       _ _     _           
-  / /  __ _ _ __ __ ___   _____| | /\ \ \__ ___   __/ __\_   _(_) | __| | ___ _ __ 
- / /  / _` | '__/ _` \ \ / / _ \ |/  \/ / _` \ \ / /__\// | | | | |/ _` |/ _ \ '__|
-/ /__| (_| | | | (_| |\ V /  __/ / /\  / (_| |\ V / \/  \ |_| | | | (_| |  __/ |   
-\____/\__,_|_|  \__,_| \_/ \___|_\_\ \/ \__,_| \_/\_____/\__,_|_|_|\__,_|\___|_|   
-                                                                                   
+     __             ___       _ _     _
+  /\ \ \__ ___   __/ __\_   _(_) | __| | ___ _ __ 
+ /  \/ / _` \ \ / /__\// | | | | |/ _` |/ _ \ '__|
+/ /\  / (_| |\ V / \/  \ |_| | | | (_| |  __/ |
+\_\ \/ \__,_| \_/\_____/\__,_|_|_|\__,_|\___|_|
+
 ```
 
 Create and manage your navigation.
@@ -63,7 +63,7 @@ Please see [CONTRIBUTING](https://github.com/hnhdigital-os/laravel-navigation-bu
 
 ## Credits
 
-* [Rocco Howard](https://github.com/therocis)
+* [Rocco Howard](https://github.com/RoccoHoward)
 * Inspired by [Laravel Menu](https://github.com/lavary/laravel-menu)
 * [All Contributors](https://github.com/hnhdigital-os/laravel-navigation-builder/contributors)
 

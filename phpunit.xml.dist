@@ -11,7 +11,7 @@
          stopOnFailure="false"
          syntaxCheck="true">
   <testsuites>
-    <testsuite name="Larvel Navigation Builder Test Suite">
+    <testsuite name="Laravel Navigation Builder Test Suite">
         <directory>./tests/</directory>
     </testsuite>
   </testsuites>

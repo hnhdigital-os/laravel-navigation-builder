@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder;
+namespace HnhDigital\NavigationBuilder;
 
 class Menu
 {
@@ -55,7 +55,7 @@ class Menu
      *
      * @param string $title
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function addItem($title)
     {
@@ -70,7 +70,7 @@ class Menu
      *
      * @param string $title
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function add($title = '')
     {
@@ -80,7 +80,7 @@ class Menu
     /**
      * Return all menu items.
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function allItems()
     {
@@ -90,7 +90,7 @@ class Menu
     /**
      * Alias for allItems.
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function all()
     {
@@ -123,7 +123,7 @@ class Menu
      * @param string $value
      * @param bool   $include_children
      *
-     * @return \Bluora\LaravelNavigationBuilder\Collection
+     * @return \HnhDigital\NavigationBuilder\Collection
      */
     public function filter($property_name, $value, $include_children = false)
     {
@@ -153,7 +153,7 @@ class Menu
     /**
      * Return the first item in the collection.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function firstItem()
     {
@@ -163,7 +163,7 @@ class Menu
     /**
      * Alias for firstItem.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function first()
     {
@@ -173,7 +173,7 @@ class Menu
     /**
      * Return the last item in the collection.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function lastItem()
     {
@@ -183,7 +183,7 @@ class Menu
     /**
      * Alias for lastItem.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function last()
     {
@@ -220,7 +220,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function setAttribute($name, ...$value)
     {
@@ -236,7 +236,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function addAttribute($name, ...$value)
     {
@@ -258,7 +258,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function removeAttribute($name, $value)
     {
@@ -275,7 +275,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function appendAttribute($name, ...$value)
     {
@@ -296,7 +296,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function prependAttribute($name, ...$value)
     {
@@ -339,7 +339,7 @@ class Menu
      * @param string $name
      * @param array  $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     private function updateAttribute($name, $value, $separator)
     {
@@ -370,7 +370,7 @@ class Menu
     /**
      * Store the original menu.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function setOriginal($original_menu)
     {
@@ -382,7 +382,7 @@ class Menu
     /**
      * Reset the menu.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function getOriginal()
     {
@@ -396,7 +396,7 @@ class Menu
      *
      * @param string ...$value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function setClass(...$value)
     {
@@ -410,7 +410,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function addClass(...$value)
     {
@@ -424,7 +424,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function removeClass(...$value)
     {
@@ -438,7 +438,7 @@ class Menu
      *
      * @param string ...$value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function setStyle(...$value)
     {
@@ -452,7 +452,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function addStyle(...$value)
     {
@@ -466,7 +466,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function removeStyle(...$value)
     {
@@ -476,7 +476,7 @@ class Menu
     /**
      * Return the last item in the collection.
      *
-     * @return \Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Item
      */
     public function get($nickname)
     {
@@ -528,7 +528,7 @@ class Menu
      * @param string $method_name
      * @param array  $arguments
      *
-     * @return \Bluora\LaravelNavigationBuilder\Collection|\Bluora\LaravelNavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Collection|\HnhDigital\NavigationBuilder\Item
      */
     public function __call($name, $arguments)
     {

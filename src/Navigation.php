@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder;
+namespace HnhDigital\NavigationBuilder;
 
 class Navigation
 {
@@ -27,7 +27,7 @@ class Navigation
      * @param string  $name
      * @param Closure $allocation_callback
      *
-     * @return Bluora\LaravelNavigationBuilder\Menu;
+     * @return HnhDigital\NavigationBuilder\Menu;
      */
     public function createMenu($name, \Closure $allocation_callback = null)
     {
@@ -53,7 +53,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function getMenu($key)
     {
@@ -65,7 +65,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function get($key)
     {
@@ -77,7 +77,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function menu($key)
     {
@@ -89,7 +89,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \Bluora\LaravelNavigationBuilder\Menu
+     * @return \HnhDigital\NavigationBuilder\Menu
      */
     public function has($key)
     {
@@ -103,7 +103,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \Bluora\LaravelNavigationBuilder\Collection
+     * @return \HnhDigital\NavigationBuilder\Collection
      */
     public function getMenus()
     {

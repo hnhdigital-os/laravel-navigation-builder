@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder;
+namespace HnhDigital\NavigationBuilder;
 
 use Illuminate\Support\Facades\Facade as BaseFacade;
 

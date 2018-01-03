@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder;
+namespace HnhDigital\NavigationBuilder;
 
 class Collection extends \Illuminate\Support\Collection
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder\Tests;
+namespace HnhDigital\NavigationBuilder\Tests;
 
-use Bluora\LaravelNavigationBuilder\Menu;
+use HnhDigital\NavigationBuilder\Menu;
 use PHPUnit\Framework\TestCase;
 
 class MenuTest extends TestCase

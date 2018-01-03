@@ -9,6 +9,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
+        "laravel/framework": ">=5.4",
         "hnhdigital-os/laravel-html-generator": "~1.0",
         "hnhdigital-os/laravel-number-converter": "dev-master"
     },
@@ -23,7 +24,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Bluora\\LaravelNavigationBuilder\\": "src/"
+            "HnhDigital\\NavigationBuilder\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HnhDigital\\NavigationBuilder\\ServiceProvider"
+            ]
         }
     },
     "scripts": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder;
+namespace HnhDigital\NavigationBuilder;
 
 use Bluora\LaravelHtmlGenerator\Html;
 use Bluora\PhpNumberConverter\NumberConverter;
@@ -67,7 +67,7 @@ class Item
     /**
      * Object reference to the parent.
      *
-     * @var \Bluora\LaravelNavigationBuilder\Item
+     * @var \HnhDigital\NavigationBuilder\Item
      */
     public $parent;
 
@@ -81,7 +81,7 @@ class Item
     /**
      * Object reference to the menu.
      *
-     * @var \Bluora\LaravelNavigationBuilder\Menu
+     * @var \HnhDigital\NavigationBuilder\Menu
      */
     private $menu;
 
@@ -148,7 +148,7 @@ class Item
      *
      * @param string $title
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function add($title)
     {
@@ -174,7 +174,7 @@ class Item
      *
      * @param bool $depth
      *
-     * @return \Bluora\LaravelNavigationBuilder\Collection
+     * @return \HnhDigital\NavigationBuilder\Collection
      */
     public function children($depth = false)
     {
@@ -184,7 +184,7 @@ class Item
     /**
      * Returns the parent of this item.
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function parent()
     {
@@ -199,7 +199,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function item($name, $value, $action = 'add')
     {
@@ -217,7 +217,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function link($name, $value, $action = 'add')
     {
@@ -233,7 +233,7 @@ class Item
      * @param string $route_name
      * @param array  $parameters
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function action($name, ...$parameters)
     {
@@ -250,7 +250,7 @@ class Item
      * @param string $name
      * @param array  $parameters
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function route($name, $parameters = [])
     {
@@ -267,7 +267,7 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function url($url, ...$parameters)
     {
@@ -284,7 +284,7 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function insecureUrl($url, ...$parameters)
     {
@@ -300,7 +300,7 @@ class Item
      *
      * @param string $url
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function externalUrl($url)
     {
@@ -315,7 +315,7 @@ class Item
     /**
      * Check and activate or deactivate.
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     private function checkActive($update_parents = true)
     {
@@ -329,7 +329,7 @@ class Item
      *
      * @param string $value
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function setTitle($value)
     {
@@ -347,7 +347,7 @@ class Item
      *
      * @param string $value
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function setNickname($value)
     {
@@ -361,7 +361,7 @@ class Item
      *
      * @param string $value
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function getNickname()
     {
@@ -383,7 +383,7 @@ class Item
      *
      * @param bool $active
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function setActive($active = true, $update_parents = true)
     {
@@ -409,7 +409,7 @@ class Item
      * @param string $template
      * @param array  $replacements
      *
-     * @return Bluora\LaravelNavigationBuilder\Item
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function setHtml($template, ...$replacements)
     {
@@ -623,7 +623,7 @@ class Item
      * @param string $method_name
      * @param array  $arguments
      *
-     * @return Bluora\LaravelNavigationBuilder\Item|string
+     * @return HnhDigital\NavigationBuilder\Item|string
      */
     public function __call($name, $arguments)
     {

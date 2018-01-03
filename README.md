@@ -18,35 +18,40 @@ This package has been developed by H&H|Digital, an Australian botique developer.
 ## Documentation
 
 * [Installation](#install)
+* [Configuration](#configuration)
 * [Usage](#usage)
 * [Contributing](#contributing)
 * [Credits](#credits)
 * [License](#license)
 
-## Installation
+## Install
 
 Via composer:
 
 `$ composer require hnhdigital-os/laravel-navigation-builder ~1.0`
 
-### Laravel configuration
-
-Enable the service provider by editing config/app.php:
-
-```php
-    'providers' => [
-        ...
-        Bluora\LaravelNavigationBuilder\ServiceProvider::class,
-        ...
-    ];
-```
+## Configuration
 
 Enable the facade by editing config/app.php:
 
 ```php
     'aliases' => [
         ...
-        'Nav' => Bluora\LaravelNavigationBuilder\Facade::class,
+        'Nav' => HnhDigital\NavigationBuilder\Facade::class,
+        ...
+    ];
+```
+
+The service provider will autoload from Laravel 5.5.
+
+To enable the service provider in versions prior to Laravel 5.4, edit the config/app.php:
+
+Enable the service provider by editing config/app.php:
+
+```php
+    'providers' => [
+        ...
+        HnhDigital\NavigationBuilder\ServiceProvider::class,
         ...
     ];
 ```

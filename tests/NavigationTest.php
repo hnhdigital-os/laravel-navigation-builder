@@ -1,9 +1,9 @@
 <?php
 
-namespace Bluora\LaravelNavigationBuilder\Tests;
+namespace HnhDigital\NavigationBuilder\Tests;
 
-use Bluora\LaravelNavigationBuilder\Collection;
-use Bluora\LaravelNavigationBuilder\Navigation;
+use HnhDigital\NavigationBuilder\Collection;
+use HnhDigital\NavigationBuilder\Navigation;
 use PHPUnit\Framework\TestCase;
 
 class NavigationTest extends TestCase

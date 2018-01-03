@@ -29,8 +29,7 @@
     "scripts": {
       "test": "composer phpunit && composer phpcs",
       "phpcs": "phpcs -p -s --standard=PSR2 ./src ./tests",
-      "phpunit": "phpunit",
-      "hhvm": "hhvm ./vendor/phpunit/phpunit/phpunit"
+      "phpunit": "phpunit"
     },
     "prefer-stable": true,
     "minimum-stability" : "dev"

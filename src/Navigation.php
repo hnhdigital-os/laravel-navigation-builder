@@ -85,6 +85,20 @@ class Navigation
     }
 
     /**
+     * Check if there are navigation items.
+     *
+     * @param string $key
+     *
+     * @return \Bluora\LaravelNavigationBuilder\Menu
+     */
+    public function has($key)
+    {
+        $menu = $this->getMenu($key);
+
+        return !is_null($menu) && $menu->count() > 0;
+    }
+
+    /**
      * Return all menu instances.
      *
      * @param string $key

@@ -682,7 +682,8 @@ class Item
                             if (($index = array_search($input_value, $current_value_array)) !== false) {
                                 unset($current_value_array[$index]);
                             }
-                            // Add class to list
+
+                        // Add class to list
                         } elseif ($action != 'remove') {
                             $current_value_array[] = $input_value;
                         }
@@ -692,7 +693,7 @@ class Item
                         sort($current_value_array);
                         $current_value = trim(implode(' ', $current_value_array));
 
-                        // Other attributes
+                    // Other attributes
                     } elseif ($arguments[0] != 'class') {
                         if ($action == 'remove') {
                             $current_value = str_replace($input_value, '', $current_value);

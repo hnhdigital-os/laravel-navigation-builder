@@ -473,21 +473,43 @@ class Item
      */
     public static function activateIfItemIsActive($item)
     {
-        if (empty($item_list = $item->getActiveIfItemIsActiveOption())) {
+        // No menu items provided.
+        if (empty($list = $item->getActiveIfItemIsActiveOption())) {
             return false;
         }
 
-        if (!is_array($item_list)) {
-            $item_list = [$item_list];
+        // Only a string value has been provided.
+        if (!is_array($list)) {
+            $list = [$list];
         }
 
-        foreach ($item_list as $nickname) {
-            $check_item = $item->getMenu()->get($nickname);
+        // Move all local menu items to a self key.
+        // We can have another navigation menu list provided.
+        $list['self'] = [];
+        foreach ($list as $key => $value) {
+            if (is_int($key)) {
+                $list['self'][] = $value;
+                unset($list[$key]);
+            }
+        }
 
-            if (!is_null($check_item) && $check_item->checkActive(false) && $check_item->getActive()) {
-                $item->setActive();
+        // Check until we find an active menu item.
+        foreach ($list as $menu_name => $items) {
+            // Check this navigation menu (self), or access the provided navigation menu.
+            $menu = $menu_name == 'self' ? $item->getMenu() : app('Nav')->menu($menu_name);
 
-                return true;
+            // Check each item.
+            foreach ($items as $nickname) {
+                // Get the menu item for this nickname.
+                $check_item = $menu->get($nickname);
+
+                // Item exists, get it to check if it is active, and then,
+                // if active, set this current item active.
+                if (!is_null($check_item) && $check_item->checkActive(false) && $check_item->getActive()) {
+                    $item->setActive();
+
+                    return true;
+                }
             }
         }
 

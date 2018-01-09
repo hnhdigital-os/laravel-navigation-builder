@@ -1,11 +1,25 @@
 <?php
 
+/*
+ * This file is part of Laravel Navigation Builder.
+ *
+ * (c) Rocco Howard <rocco@hnh.digital>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace HnhDigital\NavigationBuilder;
 
 use Bluora\LaravelHtmlGenerator\Html;
 use Bluora\PhpNumberConverter\NumberConverter;
 use Illuminate\Support\Str;
 
+/**
+ * This is the item class.
+ *
+ * @author Rocco Howard <rocco@hnh.digital>
+ */
 class Item
 {
     /**
@@ -470,7 +484,7 @@ class Item
         foreach ($item_list as $nickname) {
             $check_item = $item->getMenu()->get($nickname);
 
-            if (!is_null($check_item) && $check_item->getActive()) {
+            if (!is_null($check_item) && $check_item->checkActive(false) && $check_item->getActive()) {
                 $item->setActive();
 
                 return true;

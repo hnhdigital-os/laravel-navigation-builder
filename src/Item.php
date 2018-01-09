@@ -719,7 +719,7 @@ class Item
                                 unset($current_value_array[$index]);
                             }
 
-                        // Add class to list
+                            // Add class to list
                         } elseif ($action != 'remove') {
                             $current_value_array[] = $input_value;
                         }

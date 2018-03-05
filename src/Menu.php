@@ -73,7 +73,7 @@ class Menu
      */
     public function addItem($title)
     {
-        if (is_object($title)) {
+        if (is_object($title) && $title instanceof Item) {
             $item = $title;
         } else {
             $item = new Item($this, $title);

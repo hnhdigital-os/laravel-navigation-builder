@@ -46,17 +46,34 @@ class Navigation
     public function createMenu($name, \Closure $allocation_callback = null)
     {
         // Create menu.
-        $menu = new Menu($name);
+        if (empty($menu = $this->get($name))) {
+            $menu = new Menu($name);
+        }
 
         // Store the menu object.
         $this->menu_collection->put($name, $menu);
 
         // Make available in all views.
-        view()->share($name, $menu);
+        \view::share($name, $menu);
 
         // Allocate menu items, if provided.
         if (is_callable($allocation_callback)) {
             $allocation_callback($menu);
+        }
+
+        return $menu;
+    }
+
+    public function addToMenu($name, $menu_items)
+    {
+        // Create menu.
+        if (empty($menu = $this->get($name))) {
+            $menu = $this->createMenu($name);
+        }
+
+        // Store the menu object.
+        foreach ($menu_items->all() as $item) {
+            $menu->addItem($item);
         }
 
         return $menu;
@@ -67,7 +84,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \HnhDigital\NavigationBuilder\Menu
+     * @return Menu
      */
     public function getMenu($key)
     {
@@ -75,11 +92,37 @@ class Navigation
     }
 
     /**
+     * Return menu instance by it's key.
+     *
+     * @param string $key
+     *
+     * @return Item
+     */
+    public function getMenuItem($key)
+    {
+        list($menu, $item) = explode('.', $key);
+
+        $menu = $this->menu_collection->get($menu);
+
+        if (is_null($menu)) {
+            throw new \Exception('Menu can not be found.');
+        }
+
+        $item = $menu->get($item);
+
+        if (is_null($item)) {
+            throw new \Exception('Item can not be found.');
+        }
+
+        return $item;
+    }
+
+    /**
      * Alias for getMenu.
      *
      * @param string $key
      *
-     * @return \HnhDigital\NavigationBuilder\Menu
+     * @return Menu
      */
     public function get($key)
     {
@@ -91,7 +134,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \HnhDigital\NavigationBuilder\Menu
+     * @return Menu
      */
     public function menu($key)
     {
@@ -103,7 +146,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \HnhDigital\NavigationBuilder\Menu
+     * @return Menu
      */
     public function has($key)
     {
@@ -117,7 +160,7 @@ class Navigation
      *
      * @param string $key
      *
-     * @return \HnhDigital\NavigationBuilder\Collection
+     * @return Collection
      */
     public function getMenus()
     {

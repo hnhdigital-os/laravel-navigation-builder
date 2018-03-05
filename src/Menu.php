@@ -73,7 +73,12 @@ class Menu
      */
     public function addItem($title)
     {
-        $item = new Item($this, $title);
+        if (is_object($title)) {
+            $item = $title;
+        } else {
+            $item = new Item($this, $title);
+        }
+
         $this->item_collection->push($item);
 
         return $item;
@@ -564,6 +569,7 @@ class Menu
 
         if (count($matches) > 0) {
             $property_name = snake_case($matches[1]);
+
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
             $result = $this->filter($property_name, ...$arguments);
 

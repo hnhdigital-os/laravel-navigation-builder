@@ -549,6 +549,45 @@ class Item
     }
 
     /**
+     * Add menu as a dropdown.
+     *
+     * @param string|array $menu_source
+     *
+     * @return string
+     */
+    public function makeDropdown($menu_source, $config = [])
+    {
+        if (!is_array($menu_source)) {
+            $menu_source = [$menu_source];
+        }
+
+        $menu_container = '';
+
+        foreach ($menu_source as $menu_name) {
+            $menu = app('Nav')->get($menu_name);
+
+            if (is_null($menu) || empty($menu)) {
+                continue;
+            }
+
+            $menu_container .= $menu->setItemCallbackOption(function(&$item) {
+                  $item->addLinkAttribute('class', 'dropdown-item')
+                    ->setItemTagOption('div');
+                })->render('');
+        }
+
+        $menu_container = Html::div($menu_container)
+            ->addClass(implode(' ', array_merge(['dropdown-menu'], array_get($config, 'container.class', []))));
+
+        $this->setAfterTagOption($menu_container)
+            ->addItemAttribute('class', 'dropdown')
+            ->addLinkAttribute('class', 'dropdown-toggle')
+            ->addLinkAttribute('data-toggle', 'dropdown');
+
+        return $this;
+    }
+
+    /**
      * Render this item.
      *
      * @return string
@@ -564,10 +603,12 @@ class Item
             // Available options for this item.
             $container_tag = array_get($this->option, 'container_tag', 'ul');
             $container_class = array_get($this->option, 'container_class', 'nav');
-            $item_tag = array_get($this->option, 'tag', 'li');
+            $item_tag = array_get($this->option, 'item_tag', 'li');
             $text_only = array_get($this->option, 'text_only', false);
             $hide_children = array_get($this->option, 'hide_children', false);
             $force_inactive = array_get($this->option, 'force_inactive', false);
+            $before_tag_html = array_get($this->option, 'before_tag', '');
+            $after_tag_html = array_get($this->option, 'after_tag', '');
 
             $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
 
@@ -635,7 +676,7 @@ class Item
             }
 
             // Create the container and allocate the link.
-            return Html::$item_tag($html)->addAttributes($this->item_attribute)->s();
+            return Html::$item_tag($before_tag_html.$html.$after_tag_html)->addAttributes($this->item_attribute)->s();
         }
 
         return '';

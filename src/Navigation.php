@@ -82,12 +82,38 @@ class Navigation
     /**
      * Return menu instance by it's key.
      *
-     * @param string $key
+     * @param string|array $key
      *
      * @return Menu
      */
     public function getMenu($key)
     {
+        if (is_array($key)) {
+            $menu_items = $key;
+        } else {
+            $menu_items = explode(',', $key);
+        }
+
+        // Comma-deliminated string requested.
+        if (count($menu_items) > 1 || is_array($key)) {
+            $result = collect();
+
+            foreach ($menu_items as $key) {
+                $menu = $this->menu_collection->get($key);
+
+                if (is_null($menu)) {
+                    continue;
+                }
+
+                foreach ($menu->all() as $item) {
+                    $result->push($item);
+                }
+            }
+
+            // Create new menu and return.
+            return new Menu($key, $result);
+        }
+
         return $this->menu_collection->get($key);
     }
 

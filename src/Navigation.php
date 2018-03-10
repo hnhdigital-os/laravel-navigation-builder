@@ -54,7 +54,7 @@ class Navigation
         $this->menu_collection->put($name, $menu);
 
         // Make available in all views.
-        \view::share($name, $menu);
+        app('view')->share($name, $menu);
 
         // Allocate menu items, if provided.
         if (is_callable($allocation_callback)) {

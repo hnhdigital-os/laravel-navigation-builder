@@ -498,6 +498,10 @@ class Item
             // Check this navigation menu (self), or access the provided navigation menu.
             $menu = $menu_name == 'self' ? $item->getMenu() : app('Nav')->menu($menu_name);
 
+            if (!is_iterable($items)) {
+                continue;
+            }
+
             // Check each item.
             foreach ($items as $nickname) {
                 // Get the menu item for this nickname.

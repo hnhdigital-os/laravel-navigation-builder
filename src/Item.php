@@ -93,6 +93,13 @@ class Item
     public $parent_id = '';
 
     /**
+     * Item has authorization.
+     *
+     * @var string
+     */
+    public $authorized = true;
+
+    /**
      * Object reference to the menu.
      *
      * @var \HnhDigital\NavigationBuilder\Menu
@@ -557,7 +564,7 @@ class Item
      *
      * @param string|array $menu_source
      *
-     * @return string
+     * @return HnhDigital\NavigationBuilder\Item
      */
     public function makeDropdown($menu_source, $config = [])
     {
@@ -592,6 +599,22 @@ class Item
     }
 
     /**
+     * Check if user can use this menu item.
+     *
+     * @return HnhDigital\NavigationBuilder\Item
+     */
+    public function can($ability, $model, $user = false)
+    {
+        if ($user === false) {
+            $user = auth()->user();
+        }
+
+        $this->authorized = $user->can($ability, $model, $user);
+
+        return $this;
+    }
+
+    /**
      * Render this item.
      *
      * @return string
@@ -599,6 +622,10 @@ class Item
     public function render($menu_level = 0)
     {
         static::activateIfItemIsActive($this);
+
+        if (!$this->authorized) {
+            return '';
+        }
 
         if ($this->checkItemIsActive($this)
             && (($this->getHideIfNotActiveOption() && $this->getActive())

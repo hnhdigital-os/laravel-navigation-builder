@@ -605,6 +605,10 @@ class Item
      */
     public function can($ability, $model, $user = false)
     {
+        if (app()->runningInConsole()) {
+            return $this;
+        }
+
         if ($user === false) {
             $user = auth()->user();
         }

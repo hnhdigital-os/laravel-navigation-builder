@@ -11,7 +11,7 @@
         "php": ">=5.6.0",
         "laravel/framework": ">=5.4",
         "hnhdigital-os/laravel-html-generator": "~1.0",
-        "hnhdigital-os/laravel-number-converter": "dev-master"
+        "hnhdigital-os/laravel-number-converter": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.7",        

@@ -122,6 +122,7 @@ class Item
      *
      * - open_new_window (setOpenNewWindowOption)
      * - hide_if_not_active (setHideIfNotActiveOption)
+     * - hide_if_active (setHideIfActiveOption)
      * - show_in_breadcrumb_if_active (setShowInBreadcrumbIfActiveOption)
      *
      * @var array
@@ -623,94 +624,108 @@ class Item
     {
         static::activateIfItemIsActive($this);
 
+        // Not authorized for this menu.
         if (!$this->authorized) {
             return '';
         }
 
-        if ($this->checkItemIsActive($this)
-            && (($this->getHideIfNotActiveOption() && $this->getActive())
-            || !$this->getHideIfNotActiveOption())) {
-
-            // Available options for this item.
-            $container_tag = array_get($this->option, 'container_tag', 'ul');
-            $container_class = array_get($this->option, 'container_class', 'nav');
-            $item_tag = array_get($this->option, 'item_tag', 'li');
-            $text_only = array_get($this->option, 'text_only', false);
-            $hide_children = array_get($this->option, 'hide_children', false);
-            $force_inactive = array_get($this->option, 'force_inactive', false);
-            $before_tag_html = array_get($this->option, 'before_tag', '');
-            $after_tag_html = array_get($this->option, 'after_tag', '');
-
-            $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
-
-            // Force the menu items to not show active.
-            if ($force_inactive) {
-                $this->setActive(false);
-            }
-
-            // Link is not empty.
-            if ($this->link_type !== self::LINK_EMPTY) {
-                // Create the link.
-                $html_link = Html::a()->text($html)
-                    ->openNew(!$this->getOpenNewWindowOption())
-                    ->href($this->generateUrl())
-                    ->title($this->title);
-
-                if (!$text_only) {
-                    $html_link->addAttributes($this->link_attribute);
-                }
-
-                $html = $html_link->s();
-            } elseif (!empty($this->title)) {
-                $html = Html::span($html)->title($this->title);
-
-                if (!$text_only) {
-                    $html->addAttributes($this->link_attribute);
-                }
-            }
-
-            // Generate each of the children items.
-            if (!$hide_children && $this->hasChildren()) {
-                $child_html = '';
-
-                $item_callback = array_get($this->option, 'item_callback', null);
-
-                // Generate each child menu item (repeat this method)
-                foreach ($this->children() as $item) {
-                    $item->setItemTagOption($item_tag);
-
-                    if (!is_null($item_callback) && is_callable($item_callback)) {
-                        $item_callback($item);
-                        $item->setItemCallbackOption($item_callback);
-                    }
-
-                    $child_html .= $item->render($menu_level + 1);
-                }
-
-                if ($child_html !== '') {
-                    // Name the level
-                    $number_as_word = (new NumberConverter())->ordinal($menu_level);
-
-                    // Generate the list container
-                    $html_container = Html::$container_tag($child_html)
-                        ->addAttributes($this->container_attribute)
-                        ->addClass($container_class)
-                        ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
-
-                    $html .= $html_container->s();
-                }
-            }
-
-            if ($this->generateUrl() == \Request::url()
-                && !$this->hasChildren()) {
-                $this->addItemAttribute('class', 'actual-link');
-            }
-
-            // Create the container and allocate the link.
-            return Html::$item_tag($before_tag_html.$html.$after_tag_html)->addAttributes($this->item_attribute)->s();
+        // Item or parent is not active.
+        if (!$this->checkItemIsActive($this)) {
+            return '';
         }
 
-        return '';
+        // Hide this menu if not active.
+        if ($this->getHideIfNotActiveOption()) {
+            return '';
+        }
+
+        // Item is not directly active and marked to hide if not active.
+        if (!$this->getActive() && $this->getHideIfNotActiveOption()) {
+            return '';
+        }
+
+        // Item is directly active and marked to hide if active.
+        if ($this->getActive() && $this->getHideIfItemActiveOption()) {
+            return '';
+        }
+
+        // Available options for this item.
+        $container_tag = array_get($this->option, 'container_tag', 'ul');
+        $container_class = array_get($this->option, 'container_class', 'nav');
+        $item_tag = array_get($this->option, 'item_tag', 'li');
+        $text_only = array_get($this->option, 'text_only', false);
+        $hide_children = array_get($this->option, 'hide_children', false);
+        $force_inactive = array_get($this->option, 'force_inactive', false);
+        $before_tag_html = array_get($this->option, 'before_tag', '');
+        $after_tag_html = array_get($this->option, 'after_tag', '');
+
+        $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
+
+        // Force the menu items to not show active.
+        if ($force_inactive) {
+            $this->setActive(false);
+        }
+
+        // Link is not empty.
+        if ($this->link_type !== self::LINK_EMPTY) {
+            // Create the link.
+            $html_link = Html::a()->text($html)
+                ->openNew(!$this->getOpenNewWindowOption())
+                ->href($this->generateUrl())
+                ->title($this->title);
+
+            if (!$text_only) {
+                $html_link->addAttributes($this->link_attribute);
+            }
+
+            $html = $html_link->s();
+        } elseif (!empty($this->title)) {
+            $html = Html::span($html)->title($this->title);
+
+            if (!$text_only) {
+                $html->addAttributes($this->link_attribute);
+            }
+        }
+
+        // Generate each of the children items.
+        if (!$hide_children && $this->hasChildren()) {
+            $child_html = '';
+
+            $item_callback = array_get($this->option, 'item_callback', null);
+
+            // Generate each child menu item (repeat this method)
+            foreach ($this->children() as $item) {
+                $item->setItemTagOption($item_tag);
+
+                if (!is_null($item_callback) && is_callable($item_callback)) {
+                    $item_callback($item);
+                    $item->setItemCallbackOption($item_callback);
+                }
+
+                $child_html .= $item->render($menu_level + 1);
+            }
+
+            if ($child_html !== '') {
+                // Name the level
+                $number_as_word = (new NumberConverter())->ordinal($menu_level);
+
+                // Generate the list container
+                $html_container = Html::$container_tag($child_html)
+                    ->addAttributes($this->container_attribute)
+                    ->addClass($container_class)
+                    ->addClass(sprintf('%s-%s-level', $container_class, $number_as_word));
+
+                $html .= $html_container->s();
+            }
+        }
+
+        if ($this->generateUrl() == \Request::url()
+            && !$this->hasChildren()) {
+            $this->addItemAttribute('class', 'actual-link');
+        }
+
+        // Create the container and allocate the link.
+        return Html::$item_tag($before_tag_html.$html.$after_tag_html)->addAttributes($this->item_attribute)->s();
     }
 
     /**

@@ -658,6 +658,7 @@ class Item
         $force_inactive = array_get($this->option, 'force_inactive', false);
         $before_tag_html = array_get($this->option, 'before_tag', '');
         $after_tag_html = array_get($this->option, 'after_tag', '');
+        $no_title = array_get($this->option, 'no_title', '');
 
         $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
 
@@ -671,8 +672,11 @@ class Item
             // Create the link.
             $html_link = Html::a()->text($html)
                 ->openNew(!$this->getOpenNewWindowOption())
-                ->href($this->generateUrl())
-                ->title($this->title);
+                ->href($this->generateUrl());
+
+            if (!$no_title) {
+                $html_link->title($this->title);
+            }
 
             if (!$text_only) {
                 $html_link->addAttributes($this->link_attribute);
@@ -680,7 +684,11 @@ class Item
 
             $html = $html_link->s();
         } elseif (!empty($this->title)) {
-            $html = Html::span($html)->title($this->title);
+            $html = Html::span($html);
+
+            if (!$no_title) {
+                $html->title($this->title);
+            }
 
             if (!$text_only) {
                 $html->addAttributes($this->link_attribute);

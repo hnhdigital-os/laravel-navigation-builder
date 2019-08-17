@@ -11,6 +11,8 @@
 
 namespace HnhDigital\NavigationBuilder;
 
+use Illuminate\Support\Arr;
+
 /**
  * This is the menu class.
  *
@@ -218,7 +220,7 @@ class Menu
      */
     public function getAttribute($name, $default = null)
     {
-        return array_get($this->attribute, $name, $default);
+        return Arr::get($this->attribute, $name, $default);
     }
 
     /**
@@ -243,7 +245,7 @@ class Menu
      */
     public function setAttribute($name, ...$value)
     {
-        $value = is_array(array_get($value, 0, '')) ? array_get($value, 0) : $value;
+        $value = is_array(Arr::get($value, 0, '')) ? Arr::get($value, 0) : $value;
         $this->updateAttribute($name, $value, $this->getAttributeValueSeparator($name));
 
         return $this;
@@ -259,7 +261,7 @@ class Menu
      */
     public function addAttribute($name, ...$value)
     {
-        $value = is_array(array_get($value, 0, '')) ? array_get($value, 0) : $value;
+        $value = is_array(Arr::get($value, 0, '')) ? Arr::get($value, 0) : $value;
         list($current_value, $separator) = $this->manipulateAttribute($name, $value);
 
         foreach ($value as $attribute_value) {
@@ -340,7 +342,7 @@ class Menu
      */
     private function manipulateAttribute($name, $value)
     {
-        $current_value = array_get($this->attribute, $name, '');
+        $current_value = Arr::get($this->attribute, $name, '');
         $separator = (strlen(trim($current_value)) > 0) ? $this->getAttributeValueSeparator($name) : '';
         $current_value = $separator !== '' ? explode($separator, $current_value) : [$current_value];
 
@@ -362,7 +364,7 @@ class Menu
      */
     private function updateAttribute($name, $value, $separator)
     {
-        array_set($this->attribute, $name, implode($separator, $value));
+        Arr::set($this->attribute, $name, implode($separator, $value));
 
         return $this;
     }
@@ -512,10 +514,10 @@ class Menu
     public function render($parent_id = false)
     {
         // Available options for this menu.
-        $container_tag = array_get($this->option, 'tag', 'ul');
-        $item_tag = array_get($this->option, 'item_tag', 'li');
-        $item_callback = array_get($this->option, 'item_callback', null);
-        $text_only = array_get($this->option, 'text_only', false);
+        $container_tag = Arr::get($this->option, 'tag', 'ul');
+        $item_tag = Arr::get($this->option, 'item_tag', 'li');
+        $item_callback = Arr::get($this->option, 'item_callback', null);
+        $text_only = Arr::get($this->option, 'text_only', false);
         $html = '';
 
         $items = $this->item_collection;
@@ -586,7 +588,7 @@ class Menu
             if ($action == 'get' || $action == 'set') {
                 $array_func = 'array_'.$action;
                 if ($method_name == 'option') {
-                    $result = $array_func($this->option, $key, array_get($arguments, 0, ''));
+                    $result = $array_func($this->option, $key, Arr::get($arguments, 0, ''));
 
                     return $action == 'get' ? $result : $this;
                 }
@@ -598,7 +600,7 @@ class Menu
             return $this->$name;
         }
 
-        $this->$name = array_get($arguments, 0, '');
+        $this->$name = Arr::get($arguments, 0, '');
 
         return $this;
     }
@@ -628,6 +630,6 @@ class Menu
     {
         $name = snake_case($name);
 
-        return array_get($this->data, $name, '');
+        return Arr::get($this->data, $name, '');
     }
 }

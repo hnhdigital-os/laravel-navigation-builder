@@ -13,6 +13,7 @@ namespace HnhDigital\NavigationBuilder;
 
 use Bluora\LaravelHtmlGenerator\Html;
 use Bluora\PhpNumberConverter\NumberConverter;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -355,9 +356,9 @@ class Item
      */
     public function setTitle($value)
     {
-        $current_title = array_get($this->data, 'title', '');
+        $current_title = Arr::get($this->data, 'title', '');
         $this->data['title'] = $value;
-        if (array_get($this->data, 'nickname', '') == $current_title) {
+        if (Arr::get($this->data, 'nickname', '') == $current_title) {
             $this->nickname = $value;
         }
 
@@ -387,7 +388,7 @@ class Item
      */
     public function getNickname()
     {
-        return strtolower(Str::ascii(array_get($this->data, 'nickname', '')));
+        return strtolower(Str::ascii(Arr::get($this->data, 'nickname', '')));
     }
 
     /**
@@ -589,7 +590,7 @@ class Item
         }
 
         $menu_container = Html::div($menu_container)
-            ->addClass(implode(' ', array_merge(['dropdown-menu'], array_get($config, 'container.class', []))));
+            ->addClass(implode(' ', array_merge(['dropdown-menu'], Arr::get($config, 'container.class', []))));
 
         $this->setAfterTagOption($menu_container)
             ->addItemAttribute('class', 'dropdown')
@@ -650,15 +651,15 @@ class Item
         }
 
         // Available options for this item.
-        $container_tag = array_get($this->option, 'container_tag', 'ul');
-        $container_class = array_get($this->option, 'container_class', 'nav');
-        $item_tag = array_get($this->option, 'item_tag', 'li');
-        $text_only = array_get($this->option, 'text_only', false);
-        $hide_children = array_get($this->option, 'hide_children', false);
-        $force_inactive = array_get($this->option, 'force_inactive', false);
-        $before_tag_html = array_get($this->option, 'before_tag', '');
-        $after_tag_html = array_get($this->option, 'after_tag', '');
-        $no_title = array_get($this->option, 'no_title', '');
+        $container_tag = Arr::get($this->option, 'container_tag', 'ul');
+        $container_class = Arr::get($this->option, 'container_class', 'nav');
+        $item_tag = Arr::get($this->option, 'item_tag', 'li');
+        $text_only = Arr::get($this->option, 'text_only', false);
+        $hide_children = Arr::get($this->option, 'hide_children', false);
+        $force_inactive = Arr::get($this->option, 'force_inactive', false);
+        $before_tag_html = Arr::get($this->option, 'before_tag', '');
+        $after_tag_html = Arr::get($this->option, 'after_tag', '');
+        $no_title = Arr::get($this->option, 'no_title', '');
 
         $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
 
@@ -699,7 +700,7 @@ class Item
         if (!$hide_children && $this->hasChildren()) {
             $child_html = '';
 
-            $item_callback = array_get($this->option, 'item_callback', null);
+            $item_callback = Arr::get($this->option, 'item_callback', null);
 
             // Generate each child menu item (repeat this method)
             foreach ($this->children() as $item) {
@@ -775,7 +776,7 @@ class Item
                 if ($action == 'get' || $action == 'set') {
                     $array_func = 'array_'.$action;
                     if (($key == 'item' || $key == 'link') && $method_name == 'attribute') {
-                        $result = $array_func($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), array_get($arguments, 1, null));
+                        $result = $array_func($this->{$key.'_'.$method_name}, Arr::get($arguments, 0, null), Arr::get($arguments, 1, null));
 
                         return $action == 'get' ? $result : $this;
                     }
@@ -785,7 +786,7 @@ class Item
                             $data = $arguments;
                         } else {
                             $default = $action == 'get' ? false : true;
-                            $data = array_get($arguments, 0, $default);
+                            $data = Arr::get($arguments, 0, $default);
                         }
                         $result = $array_func($this->option, $key, $data);
 
@@ -798,8 +799,8 @@ class Item
                 // Manipulate values.
                 if (($action == 'add' || $action == 'remove' || $action == 'append' || $action == 'prepend')
                     && ($key == 'item' || $key == 'container' || $key == 'link') && $method_name == 'attribute') {
-                    $input_value = array_get($arguments, 1, '');
-                    $current_value = array_get($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), '');
+                    $input_value = Arr::get($arguments, 1, '');
+                    $current_value = Arr::get($this->{$key.'_'.$method_name}, Arr::get($arguments, 0, null), '');
 
                     // Class attributes
                     if ($arguments[0] == 'class') {
@@ -844,9 +845,9 @@ class Item
                     }
 
                     if (strlen($current_value)) {
-                        array_set($this->{$key.'_'.$method_name}, array_get($arguments, 0, null), $current_value);
+                        Arr::set($this->{$key.'_'.$method_name}, Arr::get($arguments, 0, null), $current_value);
                     } else {
-                        unset($this->{$key.'_'.$method_name}[array_get($arguments, 0, null)]);
+                        unset($this->{$key.'_'.$method_name}[Arr::get($arguments, 0, null)]);
                     }
 
                     return $this;
@@ -870,12 +871,12 @@ class Item
         }
 
         if (isset($this->$name)) {
-            $this->$name = array_get($arguments, 0, '');
+            $this->$name = Arr::get($arguments, 0, '');
 
             return $this;
         }
 
-        $this->data[$name] = array_get($arguments, 0, '');
+        $this->data[$name] = Arr::get($arguments, 0, '');
 
         return $this;
     }
@@ -933,6 +934,6 @@ class Item
             return $this->$get_method();
         }
 
-        return array_get($this->data, $name, '');
+        return Arr::get($this->data, $name, '');
     }
 }

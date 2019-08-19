@@ -574,7 +574,29 @@ class Item
             $menu_source = [$menu_source];
         }
 
+        $this->setDropdownSourceOption($menu_source)
+            ->setDropdownConfigOption($config);
+
+        return $this;
+    }
+
+    /**
+     * Render dropdown.
+     *
+     * @return HnhDigital\NavigationBuilder\Item
+     */
+    public function renderDropdown()
+    {
+        $menu_source = Arr::get($this->option, 'dropdown_source', null);
+        $config = Arr::get($this->option, 'dropdown_config', null);
+
+        if (is_null($menu_source)) {
+            return $this;
+        }
+
         $menu_container = '';
+
+        $item_callback = Arr::get($this->option, 'item_callback', null);
 
         foreach ($menu_source as $menu_name) {
             $menu = app('Nav')->get($menu_name);
@@ -583,10 +605,15 @@ class Item
                 continue;
             }
 
-            $menu_container .= $menu->setItemCallbackOption(function(&$item) {
-                  $item->addLinkAttribute('class', 'dropdown-item')
+            $menu_container .= $menu->setItemCallbackOption(function(&$item) use ($item_callback) {
+                $item->addLinkAttribute('class', 'dropdown-item')
                     ->setItemTagOption('div');
-                })->render('');
+
+                if (!is_null($item_callback) && is_callable($item_callback)) {
+                    $item_callback($item);
+                    $item->setItemCallbackOption($item_callback);
+                }
+            })->render('');
         }
 
         $menu_container = Html::div($menu_container)
@@ -650,6 +677,9 @@ class Item
             return '';
         }
 
+        // Render dropdown if has been requested.
+        $this->renderDropdown();
+
         // Available options for this item.
         $container_tag = Arr::get($this->option, 'container_tag', 'ul');
         $container_class = Arr::get($this->option, 'container_class', 'nav');
@@ -700,6 +730,7 @@ class Item
         if (!$hide_children && $this->hasChildren()) {
             $child_html = '';
 
+            // Grab the callback, we pass this down each child item.
             $item_callback = Arr::get($this->option, 'item_callback', null);
 
             // Generate each child menu item (repeat this method)

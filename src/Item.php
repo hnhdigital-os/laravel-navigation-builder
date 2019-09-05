@@ -12,7 +12,7 @@
 namespace HnhDigital\NavigationBuilder;
 
 use HnhDigital\LaravelHtmlGenerator\Html;
-use Bluora\PhpNumberConverter\NumberConverter;
+use HnhDigital\PhpNumberConverter\NumberConverter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 

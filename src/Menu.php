@@ -12,6 +12,7 @@
 namespace HnhDigital\NavigationBuilder;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * This is the menu class.
@@ -557,7 +558,7 @@ class Menu
         preg_match('/^[W|w]here([a-zA-Z0-9_]+)$/', $name, $matches);
 
         if (count($matches) > 0) {
-            $property_name = snake_case($matches[1]);
+            $property_name = Str::snake($matches[1]);
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
 
             $menu = new self($this->name.'_filtered', $this->filter($property_name, ...$arguments));
@@ -570,7 +571,7 @@ class Menu
         preg_match('/^[G|g]et[B|b]y([a-zA-Z0-9_]+)$/', $name, $matches);
 
         if (count($matches) > 0) {
-            $property_name = snake_case($matches[1]);
+            $property_name = Str::snake($matches[1]);
 
             $property_name = (stripos($property_name, 'data_') !== false) ? str_replace('_', '-', $property_name) : $property_name;
             $result = $this->filter($property_name, ...$arguments);
@@ -578,7 +579,7 @@ class Menu
             return (count($result)) ? $result->first() : null;
         }
 
-        $original_method_name = snake_case($name);
+        $original_method_name = Str::snake($name);
         preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
         if (count($matches) === 4) {
@@ -615,7 +616,7 @@ class Menu
      */
     public function __set($name, $value)
     {
-        $name = snake_case($name);
+        $name = Str::snake($name);
         $this->data[$name] = $value;
     }
 
@@ -628,7 +629,7 @@ class Menu
      */
     public function __get($name)
     {
-        $name = snake_case($name);
+        $name = Str::snake($name);
 
         return Arr::get($this->data, $name, '');
     }

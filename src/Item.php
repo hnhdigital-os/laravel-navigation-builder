@@ -790,7 +790,7 @@ class Item
      */
     public function __call($name, $arguments)
     {
-        $original_method_name = snake_case($name);
+        $original_method_name = Str::snake($name);
         preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
         if (count($matches) === 4) {
@@ -805,9 +805,9 @@ class Item
 
                 // Get calls.
                 if ($action == 'get' || $action == 'set') {
-                    $array_func = 'array_'.$action;
+                    $array_func = $action;
                     if (($key == 'item' || $key == 'link') && $method_name == 'attribute') {
-                        $result = $array_func($this->{$key.'_'.$method_name}, Arr::get($arguments, 0, null), Arr::get($arguments, 1, null));
+                        $result = Arr::$array_func($this->{$key.'_'.$method_name}, Arr::get($arguments, 0, null), Arr::get($arguments, 1, null));
 
                         return $action == 'get' ? $result : $this;
                     }
@@ -819,7 +819,7 @@ class Item
                             $default = $action == 'get' ? false : true;
                             $data = Arr::get($arguments, 0, $default);
                         }
-                        $result = $array_func($this->option, $key, $data);
+                        $result = Arr::$array_func($this->option, $key, $data);
 
                         return $action == 'get' ? $result : $this;
                     }
@@ -895,8 +895,8 @@ class Item
             return $this->$name;
         }
 
-        if (method_exists($this, 'set'.studly_case($action))) {
-            $this->{'set'.studly_case($action)}(...$arguments);
+        if (method_exists($this, 'set'.Str::studly($action))) {
+            $this->{'set'.Str::studly($action)}(...$arguments);
 
             return $this;
         }
@@ -937,8 +937,8 @@ class Item
      */
     public function __set($name, $value)
     {
-        $name = snake_case($name);
-        $set_method = 'set'.studly_case($name);
+        $name = Str::snake($name);
+        $set_method = 'set'.Str::studly($name);
         if (method_exists($this, $set_method)) {
             $this->$set_method($value);
 
@@ -959,8 +959,8 @@ class Item
      */
     public function __get($name)
     {
-        $name = snake_case($name);
-        $get_method = 'get'.studly_case($name);
+        $name = Str::snake($name);
+        $get_method = 'get'.Str::studly($name);
         if (method_exists($this, $get_method)) {
             return $this->$get_method();
         }

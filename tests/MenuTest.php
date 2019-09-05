@@ -2,11 +2,31 @@
 
 namespace HnhDigital\NavigationBuilder\Tests;
 
+use Mockery;
+use Orchestra\Testbench\TestCase;
+use Illuminate\Support\Facades\Route;
 use HnhDigital\NavigationBuilder\Menu;
-use PHPUnit\Framework\TestCase;
 
 class MenuTest extends TestCase
 {
+    /**
+     * Setup the test environment.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    /**
+     * Load the test environment routes.
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            'HnhDigital\NavigationBuilder\Tests\RouteServiceProvider'
+        ];
+    }
+
     /**
      * Assert that created object creates the correct output.
      */
@@ -109,10 +129,10 @@ class MenuTest extends TestCase
         $home_item = $menu->get('home');
 
         $home_item->item('class', 'test');
-        $this->assertEquals('<li class="actual-link test"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="test"><a target="_blank" href="https://github.com" title="Home">Home</a></li>', $home_item->render());
 
         $home_item->link('class', 'test');
-        $this->assertEquals('<li class="actual-link test"><a target="_blank" href="https://github.com" title="Home" class="test">Home</a></li>', $home_item->render());
+        $this->assertEquals('<li class="test"><a target="_blank" href="https://github.com" title="Home" class="test">Home</a></li>', $home_item->render());
     }
 
     /**

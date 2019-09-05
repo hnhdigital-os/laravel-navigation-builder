@@ -126,7 +126,7 @@ class Navigation
      */
     public function getMenuItem($key)
     {
-        list($menu, $item) = explode('.', $key);
+        [$menu, $item] = explode('.', $key);
 
         $menu = $this->menu_collection->get($menu);
 
@@ -178,7 +178,7 @@ class Navigation
     {
         $menu = $this->getMenu($key);
 
-        return !is_null($menu) && $menu->count() > 0;
+        return ! is_null($menu) && $menu->count() > 0;
     }
 
     /**

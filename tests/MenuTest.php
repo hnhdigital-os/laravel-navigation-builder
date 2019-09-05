@@ -2,9 +2,7 @@
 
 namespace HnhDigital\NavigationBuilder\Tests;
 
-use Mockery;
 use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Facades\Route;
 use HnhDigital\NavigationBuilder\Menu;
 
 class MenuTest extends TestCase
@@ -23,7 +21,7 @@ class MenuTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            'HnhDigital\NavigationBuilder\Tests\RouteServiceProvider'
+            'HnhDigital\NavigationBuilder\Tests\RouteServiceProvider',
         ];
     }
 

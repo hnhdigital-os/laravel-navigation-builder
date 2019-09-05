@@ -11,7 +11,7 @@
 
 namespace HnhDigital\NavigationBuilder;
 
-use Bluora\LaravelHtmlGenerator\Html;
+use HnhDigital\LaravelHtmlGenerator\Html;
 use Bluora\PhpNumberConverter\NumberConverter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

@@ -587,9 +587,9 @@ class Menu
 
             // $this->get[...]Option(), $this->set[...]Option()
             if ($action == 'get' || $action == 'set') {
-                $array_func = 'array_'.$action;
+                $array_func = $action;
                 if ($method_name == 'option') {
-                    $result = $array_func($this->option, $key, Arr::get($arguments, 0, ''));
+                    $result = Arr::$array_func($this->option, $key, Arr::get($arguments, 0, ''));
 
                     return $action == 'get' ? $result : $this;
                 }

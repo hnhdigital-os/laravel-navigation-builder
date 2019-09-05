@@ -11,10 +11,10 @@
 
 namespace HnhDigital\NavigationBuilder;
 
-use HnhDigital\LaravelHtmlGenerator\Html;
-use HnhDigital\PhpNumberConverter\NumberConverter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use HnhDigital\LaravelHtmlGenerator\Html;
+use HnhDigital\PhpNumberConverter\NumberConverter;
 
 /**
  * This is the item class.
@@ -419,7 +419,7 @@ class Item
         $this->$method_name('class', 'active');
 
         // Activate parents.
-        if ($update_parents && !is_null($this->parent) && $active) {
+        if ($update_parents && ! is_null($this->parent) && $active) {
             $this->parent()->setActive($active);
         }
 
@@ -488,7 +488,7 @@ class Item
         }
 
         // Only a string value has been provided.
-        if (!is_array($list)) {
+        if (! is_array($list)) {
             $list = [$list];
         }
 
@@ -507,7 +507,7 @@ class Item
             // Check this navigation menu (self), or access the provided navigation menu.
             $menu = $menu_name == 'self' ? $item->getMenu() : app('Nav')->menu($menu_name);
 
-            if (!is_iterable($items)) {
+            if (! is_iterable($items)) {
                 continue;
             }
 
@@ -518,7 +518,7 @@ class Item
 
                 // Item exists, get it to check if it is active, and then,
                 // if active, set this current item active.
-                if (!is_null($check_item) && $check_item->checkActive(false) && $check_item->getActive()) {
+                if (! is_null($check_item) && $check_item->checkActive(false) && $check_item->getActive()) {
                     $item->setActive();
 
                     return true;
@@ -546,14 +546,14 @@ class Item
             return true;
         }
 
-        if (!is_array($item_list)) {
+        if (! is_array($item_list)) {
             $item_list = [$item_list];
         }
 
         foreach ($item_list as $nickname) {
             $check_item = $item->getMenu()->get($nickname);
 
-            if (!is_null($check_item) && $check_item->getActive()) {
+            if (! is_null($check_item) && $check_item->getActive()) {
                 return true;
             }
         }
@@ -570,7 +570,7 @@ class Item
      */
     public function makeDropdown($menu_source, $config = [])
     {
-        if (!is_array($menu_source)) {
+        if (! is_array($menu_source)) {
             $menu_source = [$menu_source];
         }
 
@@ -605,11 +605,11 @@ class Item
                 continue;
             }
 
-            $menu_container .= $menu->setItemCallbackOption(function(&$item) use ($item_callback) {
+            $menu_container .= $menu->setItemCallbackOption(function (&$item) use ($item_callback) {
                 $item->addLinkAttribute('class', 'dropdown-item')
                     ->setItemTagOption('div');
 
-                if (!is_null($item_callback) && is_callable($item_callback)) {
+                if (! is_null($item_callback) && is_callable($item_callback)) {
                     $item_callback($item);
                     $item->setItemCallbackOption($item_callback);
                 }
@@ -653,12 +653,12 @@ class Item
         static::activateIfItemIsActive($this);
 
         // Not authorized for this menu.
-        if (!$this->authorized) {
+        if (! $this->authorized) {
             return '';
         }
 
         // Item or parent is not active.
-        if (!$this->checkItemIsActive($this)) {
+        if (! $this->checkItemIsActive($this)) {
             return '';
         }
 
@@ -668,7 +668,7 @@ class Item
         }
 
         // Item is not directly active and marked to hide if not active.
-        if (!$this->getActive() && $this->getHideIfNotActiveOption()) {
+        if (! $this->getActive() && $this->getHideIfNotActiveOption()) {
             return '';
         }
 
@@ -691,7 +691,7 @@ class Item
         $after_tag_html = Arr::get($this->option, 'after_tag', '');
         $no_title = Arr::get($this->option, 'no_title', '');
 
-        $html = (!$text_only && $this->html != '') ? $this->html : $this->title;
+        $html = (! $text_only && $this->html != '') ? $this->html : $this->title;
 
         // Force the menu items to not show active.
         if ($force_inactive) {
@@ -702,32 +702,32 @@ class Item
         if ($this->link_type !== self::LINK_EMPTY) {
             // Create the link.
             $html_link = Html::a()->text($html)
-                ->openNew(!$this->getOpenNewWindowOption())
+                ->openNew(! $this->getOpenNewWindowOption())
                 ->href($this->generateUrl());
 
-            if (!$no_title) {
+            if (! $no_title) {
                 $html_link->title($this->title);
             }
 
-            if (!$text_only) {
+            if (! $text_only) {
                 $html_link->addAttributes($this->link_attribute);
             }
 
             $html = $html_link->s();
-        } elseif (!empty($this->title)) {
+        } elseif (! empty($this->title)) {
             $html = Html::span($html);
 
-            if (!$no_title) {
+            if (! $no_title) {
                 $html->title($this->title);
             }
 
-            if (!$text_only) {
+            if (! $text_only) {
                 $html->addAttributes($this->link_attribute);
             }
         }
 
         // Generate each of the children items.
-        if (!$hide_children && $this->hasChildren()) {
+        if (! $hide_children && $this->hasChildren()) {
             $child_html = '';
 
             // Grab the callback, we pass this down each child item.
@@ -737,7 +737,7 @@ class Item
             foreach ($this->children() as $item) {
                 $item->setItemTagOption($item_tag);
 
-                if (!is_null($item_callback) && is_callable($item_callback)) {
+                if (! is_null($item_callback) && is_callable($item_callback)) {
                     $item_callback($item);
                     $item->setItemCallbackOption($item_callback);
                 }
@@ -760,7 +760,7 @@ class Item
         }
 
         if ($this->generateUrl() == \Request::url()
-            && !$this->hasChildren()) {
+            && ! $this->hasChildren()) {
             $this->addItemAttribute('class', 'actual-link');
         }
 
@@ -794,7 +794,7 @@ class Item
         preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
         if (count($matches) === 4) {
-            list($original_method_name, $action, $key, $method_name) = $matches;
+            [$original_method_name, $action, $key, $method_name] = $matches;
 
             $allowed_actions = ['get', 'set', 'add', 'remove', 'append', 'prepend'];
             $allowed_keys = ['item', 'link', 'container', 'link'];
@@ -885,7 +885,7 @@ class Item
                 }
             }
         } else {
-            list($action, $method_name, $key) = array_pad(explode('_', $original_method_name, 3), 3, '');
+            [$action, $method_name, $key] = array_pad(explode('_', $original_method_name, 3), 3, '');
         }
 
         $name = $method_name;

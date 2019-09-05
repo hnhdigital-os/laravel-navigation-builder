@@ -153,7 +153,7 @@ class Menu
         $filter_result = new Collection();
 
         $this->item_collection->filter(function ($item) use ($property_name, $value, $include_children, &$filter_result) {
-            if (!isset($item->$property_name)) {
+            if (! isset($item->$property_name)) {
                 return false;
             }
 
@@ -263,7 +263,7 @@ class Menu
     public function addAttribute($name, ...$value)
     {
         $value = is_array(Arr::get($value, 0, '')) ? Arr::get($value, 0) : $value;
-        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
+        [$current_value, $separator] = $this->manipulateAttribute($name, $value);
 
         foreach ($value as $attribute_value) {
             $current_value[] = $attribute_value;
@@ -284,7 +284,7 @@ class Menu
      */
     public function removeAttribute($name, $value)
     {
-        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
+        [$current_value, $separator] = $this->manipulateAttribute($name, $value);
 
         $this->updateAttribute($name, $current_value, $separator);
 
@@ -301,7 +301,7 @@ class Menu
      */
     public function appendAttribute($name, ...$value)
     {
-        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
+        [$current_value, $separator] = $this->manipulateAttribute($name, $value);
 
         foreach ($value as $attribute_value) {
             $current_value[] = $attribute_value;
@@ -322,7 +322,7 @@ class Menu
      */
     public function prependAttribute($name, ...$value)
     {
-        list($current_value, $separator) = $this->manipulateAttribute($name, $value);
+        [$current_value, $separator] = $this->manipulateAttribute($name, $value);
 
         foreach ($value as $attribute_value) {
             array_unshift($current_value, $attribute_value);
@@ -533,7 +533,7 @@ class Menu
             $item->setItemTagOption($item_tag)
                 ->setContainerTagOption($container_tag);
 
-            if (!is_null($item_callback) && is_callable($item_callback)) {
+            if (! is_null($item_callback) && is_callable($item_callback)) {
                 $item_callback($item);
                 $item->setItemCallbackOption($item_callback);
             }
@@ -583,7 +583,7 @@ class Menu
         preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
 
         if (count($matches) === 4) {
-            list($original_method_name, $action, $key, $method_name) = $matches;
+            [$original_method_name, $action, $key, $method_name] = $matches;
 
             // $this->get[...]Option(), $this->set[...]Option()
             if ($action == 'get' || $action == 'set') {

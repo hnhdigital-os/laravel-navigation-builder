@@ -616,6 +616,13 @@ class Item
             })->render('');
         }
 
+        if ($menu_container === '') {
+            $this->setActive(false)
+                ->addItemAttribute('class', 'hidden');
+
+            return $this;
+        }
+
         $menu_container = Html::div($menu_container)
             ->addClass(implode(' ', array_merge(['dropdown-menu'], Arr::get($config, 'container.class', []))));
 

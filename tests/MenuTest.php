@@ -2,8 +2,8 @@
 
 namespace HnhDigital\NavigationBuilder\Tests;
 
-use Orchestra\Testbench\TestCase;
 use HnhDigital\NavigationBuilder\Menu;
+use Orchestra\Testbench\TestCase;
 
 class MenuTest extends TestCase
 {

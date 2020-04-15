@@ -11,10 +11,10 @@
 
 namespace HnhDigital\NavigationBuilder;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use HnhDigital\LaravelHtmlGenerator\Html;
 use HnhDigital\PhpNumberConverter\NumberConverter;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * This is the item class.

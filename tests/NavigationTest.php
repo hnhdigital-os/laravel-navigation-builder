@@ -2,9 +2,9 @@
 
 namespace HnhDigital\NavigationBuilder\Tests;
 
-use PHPUnit\Framework\TestCase;
 use HnhDigital\NavigationBuilder\Collection;
 use HnhDigital\NavigationBuilder\Navigation;
+use PHPUnit\Framework\TestCase;
 
 class NavigationTest extends TestCase
 {

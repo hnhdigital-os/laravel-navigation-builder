@@ -72,7 +72,7 @@ class Menu
      *
      * @param string $title
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function addItem($title)
     {
@@ -92,7 +92,7 @@ class Menu
      *
      * @param string $title
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function add($title = '')
     {
@@ -102,7 +102,7 @@ class Menu
     /**
      * Return all menu items.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function allItems()
     {
@@ -112,7 +112,7 @@ class Menu
     /**
      * Alias for allItems.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function all()
     {
@@ -175,7 +175,7 @@ class Menu
     /**
      * Return the first item in the collection.
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function firstItem()
     {
@@ -185,7 +185,7 @@ class Menu
     /**
      * Alias for firstItem.
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function first()
     {
@@ -195,7 +195,7 @@ class Menu
     /**
      * Return the last item in the collection.
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function lastItem()
     {
@@ -205,7 +205,7 @@ class Menu
     /**
      * Alias for lastItem.
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function last()
     {
@@ -242,7 +242,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setAttribute($name, ...$value)
     {
@@ -258,7 +258,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function addAttribute($name, ...$value)
     {
@@ -280,7 +280,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function removeAttribute($name, $value)
     {
@@ -297,7 +297,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function appendAttribute($name, ...$value)
     {
@@ -318,7 +318,7 @@ class Menu
      * @param string $name
      * @param mixed  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function prependAttribute($name, ...$value)
     {
@@ -361,7 +361,7 @@ class Menu
      * @param string $name
      * @param array  $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     private function updateAttribute($name, $value, $separator)
     {
@@ -418,7 +418,7 @@ class Menu
      *
      * @param string ...$value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setClass(...$value)
     {
@@ -432,7 +432,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function addClass(...$value)
     {
@@ -446,7 +446,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function removeClass(...$value)
     {
@@ -460,7 +460,7 @@ class Menu
      *
      * @param string ...$value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setStyle(...$value)
     {
@@ -474,7 +474,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function addStyle(...$value)
     {
@@ -488,7 +488,7 @@ class Menu
      *
      * @param string $value
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function removeStyle(...$value)
     {
@@ -498,7 +498,7 @@ class Menu
     /**
      * Return the last item in the collection.
      *
-     * @return \HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function get($nickname)
     {
@@ -550,7 +550,7 @@ class Menu
      * @param string $method_name
      * @param array  $arguments
      *
-     * @return \HnhDigital\NavigationBuilder\Collection|\HnhDigital\NavigationBuilder\Item
+     * @return \HnhDigital\NavigationBuilder\Collection|Item
      */
     public function __call($name, $arguments)
     {

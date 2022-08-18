@@ -17,9 +17,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
- * This is the item class.
- *
- * @author Rocco Howard <rocco@hnh.digital>
+ * @method html(string $template, ...$replacements)
  */
 class Item
 {
@@ -82,7 +80,7 @@ class Item
     /**
      * Object reference to the parent.
      *
-     * @var \HnhDigital\NavigationBuilder\Item
+     * @var \Item
      */
     public $parent;
 
@@ -171,7 +169,7 @@ class Item
      *
      * @param string $title
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function add($title)
     {
@@ -207,7 +205,7 @@ class Item
     /**
      * Returns the parent of this item.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function parent()
     {
@@ -222,7 +220,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function item($name, $value, $action = 'add')
     {
@@ -240,7 +238,7 @@ class Item
      * @param string $value
      * @param string $action
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function link($name, $value, $action = 'add')
     {
@@ -256,7 +254,7 @@ class Item
      * @param string $route_name
      * @param array  $parameters
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function action($name, ...$parameters)
     {
@@ -273,7 +271,7 @@ class Item
      * @param string $name
      * @param array  $parameters
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function route($name, $parameters = [])
     {
@@ -290,7 +288,7 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function url($url, ...$parameters)
     {
@@ -307,7 +305,7 @@ class Item
      * @param string $url
      * @param array  $parameters
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function insecureUrl($url, ...$parameters)
     {
@@ -323,7 +321,7 @@ class Item
      *
      * @param string $url
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function externalUrl($url)
     {
@@ -338,7 +336,7 @@ class Item
     /**
      * Check and activate or deactivate.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     private function checkActive($update_parents = true)
     {
@@ -352,7 +350,7 @@ class Item
      *
      * @param string $value
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setTitle($value)
     {
@@ -370,7 +368,7 @@ class Item
      *
      * @param string $value
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setNickname($value)
     {
@@ -384,7 +382,7 @@ class Item
      *
      * @param string $value
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function getNickname()
     {
@@ -406,7 +404,7 @@ class Item
      *
      * @param bool $active
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setActive($active = true, $update_parents = true)
     {
@@ -432,7 +430,7 @@ class Item
      * @param string $template
      * @param array  $replacements
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function setHtml($template, ...$replacements)
     {
@@ -566,7 +564,7 @@ class Item
      *
      * @param string|array $menu_source
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function makeDropdown($menu_source, $config = [])
     {
@@ -583,7 +581,7 @@ class Item
     /**
      * Render dropdown.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function renderDropdown()
     {
@@ -637,7 +635,7 @@ class Item
     /**
      * Check if user can use this menu item.
      *
-     * @return HnhDigital\NavigationBuilder\Item
+     * @return Item
      */
     public function can($ability, $model, $user = false)
     {
@@ -787,15 +785,7 @@ class Item
         return isset($this->data[$property_name]);
     }
 
-    /**
-     * Set or get calls.
-     *
-     * @param string $method_name
-     * @param array  $arguments
-     *
-     * @return HnhDigital\NavigationBuilder\Item|string
-     */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         $original_method_name = Str::snake($name);
         preg_match('/^([a-z]+)_([a-z_]+)_([a-z]+)$/', $original_method_name, $matches);
@@ -964,7 +954,7 @@ class Item
      *
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string$name)
     {
         $name = Str::snake($name);
         $get_method = 'get'.Str::studly($name);

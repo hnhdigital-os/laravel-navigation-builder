@@ -70,8 +70,7 @@ class Menu
     /**
      * Add item to the menu.
      *
-     * @param string $title
-     *
+     * @param  string  $title
      * @return Item
      */
     public function addItem($title)
@@ -90,8 +89,7 @@ class Menu
     /**
      * Alias for addItem.
      *
-     * @param string $title
-     *
+     * @param  string  $title
      * @return Item
      */
     public function add($title = '')
@@ -141,10 +139,9 @@ class Menu
     /**
      * Filter items by property.
      *
-     * @param string $property_name
-     * @param string $value
-     * @param bool   $include_children
-     *
+     * @param  string  $property_name
+     * @param  string  $value
+     * @param  bool  $include_children
      * @return \HnhDigital\NavigationBuilder\Collection
      */
     public function filter($property_name, $value, $include_children = false)
@@ -215,8 +212,7 @@ class Menu
     /**
      * Get attribute by name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     public function getAttribute($name, $default = null)
@@ -227,8 +223,7 @@ class Menu
     /**
      * Get attribute by name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     public function getAttributes()
@@ -239,9 +234,8 @@ class Menu
     /**
      * Set attribute by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Item
      */
     public function setAttribute($name, ...$value)
@@ -255,9 +249,8 @@ class Menu
     /**
      * Add attribute by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Item
      */
     public function addAttribute($name, ...$value)
@@ -277,9 +270,8 @@ class Menu
     /**
      * Remove attribute by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Item
      */
     public function removeAttribute($name, $value)
@@ -294,9 +286,8 @@ class Menu
     /**
      * Append to attribute by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Item
      */
     public function appendAttribute($name, ...$value)
@@ -315,9 +306,8 @@ class Menu
     /**
      * Prepend to attribute by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Item
      */
     public function prependAttribute($name, ...$value)
@@ -336,9 +326,8 @@ class Menu
     /**
      * Clean attribute value before required change.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
+     * @param  string  $name
+     * @param  mixed  $value
      * @return array
      */
     private function manipulateAttribute($name, $value)
@@ -358,9 +347,8 @@ class Menu
     /**
      * Update attribute by name.
      *
-     * @param string $name
-     * @param array  $value
-     *
+     * @param  string  $name
+     * @param  array  $value
      * @return Item
      */
     private function updateAttribute($name, $value, $separator)
@@ -373,8 +361,7 @@ class Menu
     /**
      * Get the attribute value seperator.
      *
-     * @param stirng $name
-     *
+     * @param  stirng  $name
      * @return string
      */
     private function getAttributeValueSeparator($name)
@@ -416,8 +403,7 @@ class Menu
      *
      * Alias for setAttribute.
      *
-     * @param string ...$value
-     *
+     * @param  string  ...$value
      * @return Item
      */
     public function setClass(...$value)
@@ -430,8 +416,7 @@ class Menu
      *
      * Alias for addAttribute.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function addClass(...$value)
@@ -444,8 +429,7 @@ class Menu
      *
      * Alias for removeAttribute.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function removeClass(...$value)
@@ -458,8 +442,7 @@ class Menu
      *
      * Alias for setAttribute.
      *
-     * @param string ...$value
-     *
+     * @param  string  ...$value
      * @return Item
      */
     public function setStyle(...$value)
@@ -472,8 +455,7 @@ class Menu
      *
      * Alias for addAttribute.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function addStyle(...$value)
@@ -486,8 +468,7 @@ class Menu
      *
      * Alias for removeAttribute.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function removeStyle(...$value)
@@ -508,8 +489,7 @@ class Menu
     /**
      * Render this menu and it's children.
      *
-     * @param string $tag
-     *
+     * @param  string  $tag
      * @return string
      */
     public function render($parent_id = false)
@@ -547,9 +527,8 @@ class Menu
     /**
      * Search the menu based on a given attribute.
      *
-     * @param string $method_name
-     * @param array  $arguments
-     *
+     * @param  string  $method_name
+     * @param  array  $arguments
      * @return \HnhDigital\NavigationBuilder\Collection|Item
      */
     public function __call($name, $arguments)
@@ -609,9 +588,8 @@ class Menu
     /**
      * Set a data value by a name.
      *
-     * @param string $name
-     * @param string $value
-     *
+     * @param  string  $name
+     * @param  string  $value
      * @return void
      */
     public function __set($name, $value)
@@ -623,8 +601,7 @@ class Menu
     /**
      * Return the value of data by name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return mixed
      */
     public function __get($name)

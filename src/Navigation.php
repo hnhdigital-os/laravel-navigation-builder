@@ -38,9 +38,8 @@ class Navigation
     /**
      * Create new menu.
      *
-     * @param string  $name
-     * @param Closure $allocation_callback
-     *
+     * @param  string  $name
+     * @param  Closure  $allocation_callback
      * @return HnhDigital\NavigationBuilder\Menu;
      */
     public function createMenu($name, \Closure $allocation_callback = null)
@@ -82,8 +81,7 @@ class Navigation
     /**
      * Return menu instance by it's key.
      *
-     * @param string|array $key
-     *
+     * @param  string|array  $key
      * @return Menu
      */
     public function getMenu($key)
@@ -120,8 +118,7 @@ class Navigation
     /**
      * Return menu instance by it's key.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return Item
      */
     public function getMenuItem($key)
@@ -146,8 +143,7 @@ class Navigation
     /**
      * Alias for getMenu.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return Menu
      */
     public function get($key)
@@ -158,8 +154,7 @@ class Navigation
     /**
      * Alias for getMenu.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return Menu
      */
     public function menu($key)
@@ -170,8 +165,7 @@ class Navigation
     /**
      * Check if there are navigation items.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return Menu
      */
     public function has($key)
@@ -184,8 +178,7 @@ class Navigation
     /**
      * Return all menu instances.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return Collection
      */
     public function getMenus()

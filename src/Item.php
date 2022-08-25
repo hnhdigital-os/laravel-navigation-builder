@@ -152,9 +152,8 @@ class Item
     /**
      * Initializing the menu item.
      *
-     * @param Menu   $menu
-     * @param string $title
-     *
+     * @param  Menu  $menu
+     * @param  string  $title
      * @return void
      */
     public function __construct($menu, $title)
@@ -167,8 +166,7 @@ class Item
     /**
      * Add a menu item as a child.
      *
-     * @param string $title
-     *
+     * @param  string  $title
      * @return Item
      */
     public function add($title)
@@ -193,8 +191,7 @@ class Item
     /**
      * Returns children of the item.
      *
-     * @param bool $depth
-     *
+     * @param  bool  $depth
      * @return \HnhDigital\NavigationBuilder\Collection
      */
     public function children($depth = false)
@@ -216,10 +213,9 @@ class Item
      * Modify an attribute on the item.
      * Alias for addItemAttribute($name, $value).
      *
-     * @param string $name
-     * @param string $value
-     * @param string $action
-     *
+     * @param  string  $name
+     * @param  string  $value
+     * @param  string  $action
      * @return Item
      */
     public function item($name, $value, $action = 'add')
@@ -234,10 +230,9 @@ class Item
      * Modify an attribute on the link.
      * Alias for addLinkAttribute($name, $value).
      *
-     * @param string $name
-     * @param string $value
-     * @param string $action
-     *
+     * @param  string  $name
+     * @param  string  $value
+     * @param  string  $action
      * @return Item
      */
     public function link($name, $value, $action = 'add')
@@ -251,9 +246,8 @@ class Item
     /**
      * Set the item to be a action.
      *
-     * @param string $route_name
-     * @param array  $parameters
-     *
+     * @param  string  $route_name
+     * @param  array  $parameters
      * @return Item
      */
     public function action($name, ...$parameters)
@@ -268,9 +262,8 @@ class Item
     /**
      * Set the item to be a route.
      *
-     * @param string $name
-     * @param array  $parameters
-     *
+     * @param  string  $name
+     * @param  array  $parameters
      * @return Item
      */
     public function route($name, $parameters = [])
@@ -285,9 +278,8 @@ class Item
     /**
      * Set the item to be a url.
      *
-     * @param string $url
-     * @param array  $parameters
-     *
+     * @param  string  $url
+     * @param  array  $parameters
      * @return Item
      */
     public function url($url, ...$parameters)
@@ -302,9 +294,8 @@ class Item
     /**
      * Set the item to be a insecure url.
      *
-     * @param string $url
-     * @param array  $parameters
-     *
+     * @param  string  $url
+     * @param  array  $parameters
      * @return Item
      */
     public function insecureUrl($url, ...$parameters)
@@ -319,8 +310,7 @@ class Item
     /**
      * Set the item be an external url.
      *
-     * @param string $url
-     *
+     * @param  string  $url
      * @return Item
      */
     public function externalUrl($url)
@@ -348,8 +338,7 @@ class Item
     /**
      * Set the title.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function setTitle($value)
@@ -366,8 +355,7 @@ class Item
     /**
      * Set the nickname.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function setNickname($value)
@@ -380,8 +368,7 @@ class Item
     /**
      * Get the nickname.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return Item
      */
     public function getNickname()
@@ -402,8 +389,7 @@ class Item
     /**
      * Set this item active.
      *
-     * @param bool $active
-     *
+     * @param  bool  $active
      * @return Item
      */
     public function setActive($active = true, $update_parents = true)
@@ -427,9 +413,8 @@ class Item
     /**
      * Check the html content for sprintf template before allocation.
      *
-     * @param string $template
-     * @param array  $replacements
-     *
+     * @param  string  $template
+     * @param  array  $replacements
      * @return Item
      */
     public function setHtml($template, ...$replacements)
@@ -474,8 +459,7 @@ class Item
     /**
      * Activate if listed is item is active.
      *
-     * @param Item $item
-     *
+     * @param  Item  $item
      * @return bool
      */
     public static function activateIfItemIsActive($item)
@@ -530,8 +514,7 @@ class Item
     /**
      * Check if listed items are active.
      *
-     * @param Item $item
-     *
+     * @param  Item  $item
      * @return bool
      */
     public function checkItemIsActive($item)
@@ -562,8 +545,7 @@ class Item
     /**
      * Add menu as a dropdown.
      *
-     * @param string|array $menu_source
-     *
+     * @param  string|array  $menu_source
      * @return Item
      */
     public function makeDropdown($menu_source, $config = [])
@@ -776,8 +758,7 @@ class Item
     /**
      * Check if this item has the given property.
      *
-     * @param string $property_name
-     *
+     * @param  string  $property_name
      * @return bool
      */
     public function __isset($property_name)
@@ -912,9 +893,8 @@ class Item
     /**
      * Set a data value by a name.
      *
-     * @param string $name
-     * @param string $value
-     *
+     * @param  string  $name
+     * @param  string  $value
      * @return void
      */
     public function data($name, $value)
@@ -927,9 +907,8 @@ class Item
     /**
      * Set a data value by a name.
      *
-     * @param string $name
-     * @param string $value
-     *
+     * @param  string  $name
+     * @param  string  $value
      * @return void
      */
     public function __set($name, $value)
@@ -950,11 +929,10 @@ class Item
     /**
      * Return the value of data by name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return mixed
      */
-    public function __get(string$name)
+    public function __get(string $name)
     {
         $name = Str::snake($name);
         $get_method = 'get'.Str::studly($name);

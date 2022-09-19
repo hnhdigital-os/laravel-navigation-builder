@@ -40,7 +40,7 @@ class Navigation
      *
      * @param  string  $name
      * @param  Closure  $allocation_callback
-     * @return HnhDigital\NavigationBuilder\Menu;
+     * @return Menu
      */
     public function createMenu($name, \Closure $allocation_callback = null)
     {

@@ -780,7 +780,6 @@ class Item
 
             if (in_array($action, $allowed_actions)
                 && in_array($method_name, $allowed_method_names)) {
-
                 // Get calls.
                 if ($action == 'get' || $action == 'set') {
                     $array_func = $action;
@@ -824,7 +823,7 @@ class Item
                                 unset($current_value_array[$index]);
                             }
 
-                            // Add class to list
+                        // Add class to list
                         } elseif ($action != 'remove') {
                             $current_value_array[] = $input_value;
                         }
